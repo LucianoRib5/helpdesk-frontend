@@ -29,7 +29,7 @@ const put = async <T>(
   return api.put<T>(url, data, config)
 }
 
-const delet = async <T>(
+const del = async <T>(
   url: string,
   config?: AxiosRequestConfig,
 ): Promise<AxiosResponse<T>> => {
@@ -40,7 +40,7 @@ const ApiService = {
   get,
   post,
   put,
-  delet,
+  del,
 }
 
 export default ApiService
