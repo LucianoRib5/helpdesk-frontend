@@ -4,8 +4,9 @@ import { Provider } from 'react-redux'
 import { store } from './app/store.ts'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import App from './App.tsx'
 import theme from './styles/theme.ts';
+import { BrowserRouter } from 'react-router-dom'
+import AppRoutes from './routes/AppRoutes.tsx'
 
 const queryClient = new QueryClient()
 
@@ -15,7 +16,9 @@ createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <App />
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
         </ThemeProvider>
       </QueryClientProvider>
     </Provider>
