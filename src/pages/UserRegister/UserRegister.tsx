@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { userSchema, type UserSchema } from '../../schemas/user.schema';
 import UserService  from '../../services/UserService';
 import type { CreateUserPayload } from '../../features/user/userTypes';
-import Input from '../../components/Input';
-import Text from '../../components/Text';
+import CustomInput from '../../components/CustomInput';
+import CustomText from '../../components/CustomText';
 import CustomButton from '../../components/CustomButton';
 import CustomPaper from '../../components/CustomPaper';
 import CheckboxField from '../../components/CheckboxField';
@@ -49,15 +49,15 @@ const UserRegister: React.FC = () => {
 
   return (
     <CustomPaper>
-      <Text>Criar Conta</Text>
+      <CustomText>Criar Conta</CustomText>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Input 
+        <CustomInput 
           name='name'
           label="Nome"
           register={register('name')}
           fieldError={errors.name}
         />
-        <Input
+        <CustomInput
           name='email'
           label="E-mail"
           register={register('email')}
@@ -68,34 +68,34 @@ const UserRegister: React.FC = () => {
           checked={isCompany}
           onChange={setIsCompany}
         />
-        <Input
+        <CustomInput
           name='cpf'
           label="CPF"
           register={register('cpf')}
           fieldError={errors.cpf}
         />
         {isCompany && (
-          <Input
+          <CustomInput
             name='cnpj'
             label="CNPJ"
             register={register('cnpj')}
             fieldError={errors.cnpj}
           />
         )}
-        <Input
+        <CustomInput
           name='phoneNumber'
           label="Telefone"
           register={register('phoneNumber')}
           fieldError={errors.phoneNumber}
         />
-        <Input
+        <CustomInput
           name='password'
           label="Senha"
           type="password"
           register={register('password')}
           fieldError={errors.password}
         />
-        <Input
+        <CustomInput
           name='confirmPassword'
           label="Confirmar Senha"
           type="password"
@@ -106,6 +106,12 @@ const UserRegister: React.FC = () => {
           Cadastrar
         </CustomButton>
       </form>
+        <p className="text-center text-sm text-gray-600 mt-4">
+          Já tem uma conta?{' '}
+          <a href="/login" className="text-black font-medium hover:underline">
+            Login
+          </a>
+      </p>
     </CustomPaper>
   );
 };
