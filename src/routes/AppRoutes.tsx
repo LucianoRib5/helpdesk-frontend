@@ -17,7 +17,7 @@ const AppRoutes = () => {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
-          <Route path='/' element={<Home />} />
+          <Route path='/dashboard' element={<Home />} />
         </Route>
       </Route>
 
