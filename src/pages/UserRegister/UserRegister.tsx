@@ -108,9 +108,9 @@ const UserRegister: React.FC = () => {
           Cadastrar
         </CustomButton>
       </form>
-        <p className="text-center text-sm text-gray-600 mt-4">
+        <p>
           Já tem uma conta?{' '}
-          <a href="/login" className="text-black font-medium hover:underline">
+          <a href="/login">
             Login
           </a>
       </p>
