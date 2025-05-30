@@ -1,4 +1,3 @@
-import React from 'react';
 import { Toolbar, type ToolbarProps } from '@mui/material';
 
 interface CustomToolbarProps extends ToolbarProps {
