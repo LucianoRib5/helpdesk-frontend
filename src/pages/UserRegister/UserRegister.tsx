@@ -4,13 +4,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { userSchema, type UserSchema } from '../../schemas/user.schema';
-import UserService  from '../../services/UserService';
 import type { CreateUserPayload } from '../../features/user/userTypes';
-import CustomInput from '../../components/CustomInput';
-import CustomText from '../../components/CustomText';
-import CustomButton from '../../components/CustomButton';
-import CustomPaper from '../../components/CustomPaper';
-import CheckboxField from '../../components/CheckboxField';
+import { 
+  CheckboxField, 
+  CustomButton, 
+  CustomInput, 
+  CustomPaper, 
+  CustomText 
+} from '../../components';
+import UserService  from '../../services/UserService';
 
 const UserRegister: React.FC = () => {
   const [isCompany, setIsCompany] = useState(false);
