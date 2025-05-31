@@ -15,7 +15,7 @@ import {
 import AuthService from '../../services/AuthService';
 import CustomerService from '../../services/CustomerService';
 import { UserTypeEnum, type UserBasicInfo } from '../../features/user/userTypes';
-import { setCurrentCustomer } from '../../store/slices/customerSlice';
+import { setCurrentCustomer, setCustomers } from '../../store/slices/customerSlice';
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +42,13 @@ const Login: React.FC = () => {
         console.error('Erro ao buscar customer:', error);
       }
     } else {
-      navigate('/dashboard');
+      try {
+        const customers = await CustomerService.getAllCustomers();
+        dispatch(setCustomers(customers));
+        navigate('/dashboard');
+      } catch (error) {
+        console.error('Erro ao buscar customers:', error);
+      }
     }
   };
 
