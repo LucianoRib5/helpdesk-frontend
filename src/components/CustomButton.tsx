@@ -6,7 +6,7 @@ interface CustomButtonProps extends ButtonProps {
 
 const CustomButton: React.FC<CustomButtonProps> = ({ children, ...rest }) => {
   return (
-    <Button fullWidth variant="contained" type="submit" sx={{ mt: 2 }} {...rest}>
+    <Button variant="contained" type="submit" sx={{ mt: 2 }} {...rest}>
       {children}
     </Button>
   );
