@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { UserBasicInfo } from '../../features/user/userTypes';
+import { clearToken } from '../../utils/token';
 
 interface AuthState {
   user: UserBasicInfo | null;
@@ -18,6 +19,7 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
+      clearToken();
     },
   },
 });

@@ -11,9 +11,14 @@ import {
   CustomDrawer
 } from '../components';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { logout } from '../store/slices/authSlice';
+import { resetState } from '../store/slices/actions/resetActions';
 
 const MainLayout = () => {
   const { user } = useAppSelector((state) => state.auth);
+
+  const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
@@ -68,7 +73,11 @@ const MainLayout = () => {
               }}
               icon={<LogoutIcon />}
               text='Sair'
-              onClick={() => navigate('/login')}
+              onClick={() => { 
+                navigate('/login')
+                dispatch(logout())
+                dispatch(resetState())  
+              }}
             />
           </CustomList>
         </CustomBox>
