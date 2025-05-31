@@ -1,14 +1,22 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { resetState } from './slices/actions/resetActions'
+import authReducer from './slices/authSlice'
+import ticketReducer from './slices/ticketSlice'
+import customerReducer from './slices/customerSlice'
 
-import authReducer from '../store/slices/authSlice';
-import ticketReducer from '../store/slices/ticketSlice';
-import customerReducer from '../store/slices/customerSlice';
-
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   auth: authReducer,
   ticket: ticketReducer,
   customer: customerReducer,
-});
+})
+
+const rootReducer = (state: ReturnType<typeof appReducer> | undefined, action: any) => {
+  if (resetState.match(action)) {
+    state = undefined
+  }
+
+  return appReducer(state, action)
+}
 
 export const store = configureStore({
   reducer: rootReducer,
@@ -16,7 +24,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
     }),
-});
+})
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
