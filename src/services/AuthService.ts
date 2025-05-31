@@ -5,7 +5,6 @@ const { post } = ApiService
 
 const AuthService = {
     login: async (payload: LoginPayload) => {
-        console.log('payload', payload)
         return post<AuthResponse>('/users/login', payload)
     },
 }
