@@ -4,7 +4,7 @@ import type { FieldError, UseFormRegisterReturn } from 'react-hook-form';
 interface CustomInputProps extends Omit<TextFieldProps, 'name' | 'error' | 'helperText'> {
   name: string;
   label: string;
-  register: UseFormRegisterReturn;
+  register?: UseFormRegisterReturn;
   fieldError?: FieldError;
 }
 
@@ -22,7 +22,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
       error={!!fieldError}
       helperText={fieldError?.message}
       margin="normal"
-      {...register}
+      {...(register ? register : {})}
       {...rest}
     />
   );
