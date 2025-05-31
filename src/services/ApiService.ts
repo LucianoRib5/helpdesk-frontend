@@ -1,10 +1,20 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios'
+import { getToken } from '../utils/token'
 
-const config: AxiosRequestConfig = {
+const api: AxiosInstance = axios.create({
   baseURL: 'http://localhost:8080/api',
-}
+})
 
-const api: AxiosInstance = axios.create(config)
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken()
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => Promise.reject(error),
+)
 
 const get = async <T>(
   url: string,
