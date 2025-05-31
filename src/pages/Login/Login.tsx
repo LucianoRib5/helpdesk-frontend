@@ -13,6 +13,9 @@ import {
   CustomText 
 } from '../../components';
 import AuthService from '../../services/AuthService';
+import CustomerService from '../../services/CustomerService';
+import { UserTypeEnum, type UserBasicInfo } from '../../features/user/userTypes';
+import { setCurrentCustomer } from '../../store/slices/customerSlice';
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -26,13 +29,26 @@ const Login: React.FC = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  const onSuccess = async (user: UserBasicInfo, token: string) => {
+    dispatch(setUser(user));
+    setToken(token);
+
+    if (user.userType === UserTypeEnum.CUSTOMER) {
+      try {
+        const customer = await CustomerService.getCustomerByUserId(user.userId);
+        dispatch(setCurrentCustomer(customer));
+        navigate('/dashboard');
+      } catch (error) {
+        console.error('Erro ao buscar customer:', error);
+      }
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   const { mutate, isPending } = useMutation({
     mutationFn: (data: LoginSchema) => AuthService.login(data),
-    onSuccess: (response) => {
-      dispatch(setUser(response.data.user))
-      setToken(response.data.token)
-      navigate('/dashboard');
-    },
+    onSuccess: (response) => onSuccess(response.data.user, response.data.token),
     onError: (error: any) => {
       console.error('Login error:', error);
     }
