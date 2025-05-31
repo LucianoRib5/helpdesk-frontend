@@ -6,7 +6,7 @@ interface CustomTextProps extends TypographyProps {
 
 const CustomText: React.FC<CustomTextProps> = ({ children, ...rest }) => {
   return (
-    <Typography variant="h6" align="center" {...rest}>
+    <Typography {...rest}>
       {children}
     </Typography>
   );
