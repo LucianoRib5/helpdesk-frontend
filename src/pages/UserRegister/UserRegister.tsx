@@ -53,14 +53,12 @@ const UserRegister: React.FC = () => {
     <CustomPaper>
       <CustomText>Criar Conta</CustomText>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <CustomInput 
-          name='name'
+        <CustomInput
           label="Nome"
           register={register('name')}
           fieldError={errors.name}
         />
         <CustomInput
-          name='email'
           label="E-mail"
           register={register('email')}
           fieldError={errors.email}          
@@ -71,34 +69,29 @@ const UserRegister: React.FC = () => {
           onChange={setIsCompany}
         />
         <CustomInput
-          name='cpf'
           label="CPF"
           register={register('cpf')}
           fieldError={errors.cpf}
         />
         {isCompany && (
           <CustomInput
-            name='cnpj'
             label="CNPJ"
             register={register('cnpj')}
             fieldError={errors.cnpj}
           />
         )}
         <CustomInput
-          name='phoneNumber'
           label="Telefone"
           register={register('phoneNumber')}
           fieldError={errors.phoneNumber}
         />
         <CustomInput
-          name='password'
           label="Senha"
           type="password"
           register={register('password')}
           fieldError={errors.password}
         />
         <CustomInput
-          name='confirmPassword'
           label="Confirmar Senha"
           type="password"
           register={register('confirmPassword')}

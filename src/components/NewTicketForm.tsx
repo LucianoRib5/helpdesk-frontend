@@ -109,7 +109,7 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
             control={control}
             render={({ field }) => (
               <CustomInput
-                name="title"
+                {...field}
                 label="Título"
                 placeholder="Insira o título"
                 register={register(field.name)}
@@ -150,7 +150,7 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
                         renderInput={(params) => (
                           <CustomInput
                             {...params}
-                            name="customerId"
+                            {...field}
                             label="Buscar por CPF ou CNPJ"
                             placeholder="Digite CPF ou CNPJ do cliente"
                             fieldError={errors.customerId}
@@ -174,7 +174,7 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
             control={control}
             render={({ field }) => (
               <CustomInput
-                name="description"
+                {...field}
                 label="Descrição"
                 placeholder="Descreva o problema"
                 multiline

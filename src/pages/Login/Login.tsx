@@ -69,14 +69,12 @@ const Login: React.FC = () => {
       <CustomText>Bem-vindo de volta</CustomText>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CustomInput
-          name="email"
           label="Email"
           placeholder="Insira seu e-mail"
           register={register('email')}
           fieldError={errors.email}
         />
         <CustomInput
-          name="password"
           label="Senha"
           type="password"
           placeholder="Insira sua senha"
