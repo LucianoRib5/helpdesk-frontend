@@ -9,6 +9,8 @@ import CustomPaper from "./CustomPaper";
 import CustomText from "./CustomText";
 import CustomToolbar from "./CustomToolbar";
 import NavListItem from "./NavListItem";
+import TicketCard from "./TicketCard";
+import TicketFilter from "./TicketFilter";
 
 export {
     CheckboxField,
@@ -21,5 +23,7 @@ export {
     CustomPaper,
     CustomText,
     CustomToolbar,
-    NavListItem, 
+    NavListItem,
+    TicketCard,
+    TicketFilter
 };

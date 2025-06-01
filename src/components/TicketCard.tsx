@@ -1,0 +1,59 @@
+import { CustomBox, CustomPaper, CustomText } from '.';
+import { useAppSelector } from '../hooks/useAppSelector';
+import { isCustomer } from '../utils/roles';
+
+interface TicketCardProps {
+  id: number;
+  title: string;
+  responsible?: string;
+  status: string;
+  date: string;
+}
+
+const TicketCard: React.FC<TicketCardProps> = ({
+  id,
+  title,
+  responsible,
+  status,
+  date,
+}) => {
+  const { user } = useAppSelector((state) => state.auth);
+
+  return (
+    <CustomPaper 
+      sx={{ 
+        borderRadius: 3, 
+        boxShadow: 1,
+        minWidth: 300, 
+        maxWidth: 300,
+        minHeight: 180,
+        maxHeight: 180, 
+        p: 3 
+      }}
+    >
+      <CustomText variant="subtitle1" fontWeight="bold" gutterBottom>
+        {`Chamado #${String(id). padStart(3, '0')}`}
+      </CustomText>
+      <CustomBox>
+        <CustomText variant="body2" gutterBottom>
+          <strong>Título:</strong> {title}
+        </CustomText>
+        {
+          isCustomer(user?.userType) && (
+            <CustomText variant="body2" gutterBottom>
+              <strong>Responsável:</strong> {responsible}
+            </CustomText>
+          )
+        }
+        <CustomText variant="body2" gutterBottom>
+          <strong>Status:</strong> {status}
+        </CustomText>
+        <CustomText variant="body2">
+          <strong>Data:</strong> {date}
+        </CustomText>
+      </CustomBox>
+    </CustomPaper>
+  );
+};
+
+export default TicketCard;
