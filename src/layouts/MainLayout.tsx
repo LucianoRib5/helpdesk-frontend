@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { isAdmin } from '../utils/isAdmin';
+import { isAdmin } from '../utils/roles';
 import { 
   CustomBox, 
   CustomText, 

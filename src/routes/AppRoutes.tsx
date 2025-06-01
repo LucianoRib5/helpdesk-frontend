@@ -6,6 +6,7 @@ import Home from '../pages/Home/Home'
 import NotFound from '../pages/NotFound/NotFound'
 import Login from '../pages/Login/Login'
 import AuthLayout from '../layouts/AuthLayout'
+import TicketList from '../pages/TicketList/TicketList'
 
 const isAuthenticated = () => Boolean(localStorage.getItem('token'))
 
@@ -25,6 +26,7 @@ const AppRoutes = () => {
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
           <Route path='/dashboard' element={<Home />} />
+          <Route path='/dashboard/tickets' element={<TicketList />} />
         </Route>
       </Route>
 

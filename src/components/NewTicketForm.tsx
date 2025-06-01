@@ -22,6 +22,7 @@ import { priorities, type CreateTicketPayload } from '../features/ticket/ticketT
 import { UserTypeEnum, type UserBasicInfo } from '../features/user/userTypes';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { addTicket } from '../store/slices/ticketSlice';
+import { isCustomer } from '../utils/roles';
 
 interface NewTicketFormProps {
   user: UserBasicInfo
@@ -44,7 +45,7 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
       title: '',
       description: '',
       priorityId: 0,
-      customerId: user.userType === UserTypeEnum.CUSTOMER && currentCustomer
+      customerId: isCustomer(user.userType) && currentCustomer
         ? currentCustomer.id
         : 0,
     },
@@ -54,7 +55,7 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
     setValue('title', '');
     setValue('description', '');
     setValue('priorityId', 0);
-    setValue('customerId', 0);
+    if(!isCustomer) setValue('customerId', 0);
   }
 
   const { mutate, isPending } = useMutation({
@@ -101,9 +102,6 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <CustomBox mt={2}>
-          <CustomText variant="subtitle2" gutterBottom>
-            Título
-          </CustomText>
           <Controller
             name="title"
             control={control}
@@ -119,13 +117,10 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
           />
         </CustomBox>
 
-        <CustomBox mt={3}>
+        <CustomBox mt={2}>
           {
             user?.userType !== UserTypeEnum.CUSTOMER && (
               <>
-                <CustomText variant="subtitle2" gutterBottom>
-                  Cliente
-                </CustomText>
                 <Controller
                   name="customerId"
                   control={control}
@@ -165,10 +160,7 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
           }
         </CustomBox>
 
-        <CustomBox mt={3}>
-          <CustomText variant="subtitle2" gutterBottom>
-            Descrição
-          </CustomText>
+        <CustomBox mt={2}>
           <Controller
             name="description"
             control={control}
@@ -191,24 +183,27 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
             Prioridade
           </CustomText>
           <Stack direction="row" spacing={2}>
-            {priorities.map((p) => (
-              <FormControlLabel
-                key={p.id}
-                control={
-                  <Checkbox
-                    checked={selectedPriority === p.id}
-                    onChange={() => setValue('priorityId', p.id)}
-                    sx={{
-                      color: '#76809B',
-                      '&.Mui-checked': {
-                        color: '#4F5D75',
-                      },
-                    }}
-                  />
-                }
-                label={p.label}
-              />
-            ))}
+            {priorities
+              .filter((priority) => priority.id !== undefined)
+              .map((priority) => (
+                <FormControlLabel
+                  key={priority.id}
+                  control={
+                    <Checkbox
+                      checked={selectedPriority === priority.id}
+                      onChange={() => setValue('priorityId', priority.id)}
+                      sx={{
+                        color: '#76809B',
+                        '&.Mui-checked': {
+                          color: '#4F5D75',
+                        },
+                      }}
+                    />
+                  }
+                  label={priority.label}
+                />
+              ))
+            }
           </Stack>
           {errors.priorityId && (
             <FormHelperText error>{errors.priorityId.message}</FormHelperText>

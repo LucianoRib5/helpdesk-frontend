@@ -14,8 +14,9 @@ import {
 } from '../../components';
 import AuthService from '../../services/AuthService';
 import CustomerService from '../../services/CustomerService';
-import { UserTypeEnum, type UserBasicInfo } from '../../features/user/userTypes';
+import { type UserBasicInfo } from '../../features/user/userTypes';
 import { setCurrentCustomer, setCustomers } from '../../store/slices/customerSlice';
+import { isCustomer } from '../../utils/roles';
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -33,7 +34,7 @@ const Login: React.FC = () => {
     dispatch(setUser(user));
     setToken(token);
 
-    if (user.userType === UserTypeEnum.CUSTOMER) {
+    if (isCustomer(user.userType)) {
       try {
         const customer = await CustomerService.getCustomerByUserId(user.userId);
         dispatch(setCurrentCustomer(customer));
