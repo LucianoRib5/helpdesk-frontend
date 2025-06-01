@@ -22,9 +22,13 @@ const LastTickets: React.FC = () => {
       <CustomText variant='h6' fontWeight='bold' gutterBottom>
         Últimos chamados abertos
       </CustomText>
-      <CustomText variant='body2' color='text.secondary' gutterBottom>
-        Confira seus três últimos chamados abertos, você pode acessa-los a qualquer momento!
-      </CustomText>
+      {
+        orderedLastTickets.length > 0 && (
+          <CustomText variant='body2' color='text.secondary' gutterBottom>
+            Confira seus três últimos chamados abertos, você pode acessa-los a qualquer momento!
+          </CustomText>
+        )
+      }
       <CustomBox>
         <List disablePadding>
           {
@@ -42,7 +46,7 @@ const LastTickets: React.FC = () => {
               ))
             ) :
             (
-              <CustomText variant='body2'>
+              <CustomText variant='body2' color='text.secondary'>
                 Você ainda não possui chamados abertos.
               </CustomText>
             )
