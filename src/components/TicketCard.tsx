@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { CustomBox, CustomPaper, CustomText } from '.';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { isCustomer } from '../utils/roles';
@@ -18,17 +19,28 @@ const TicketCard: React.FC<TicketCardProps> = ({
   date,
 }) => {
   const { user } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/ticket/${id}/details`);
+  };
 
   return (
     <CustomPaper 
-      sx={{ 
+      onClick={handleClick}
+      sx={{
         borderRadius: 3, 
         boxShadow: 1,
         minWidth: 300, 
         maxWidth: 300,
         minHeight: 180,
         maxHeight: 180, 
-        p: 3 
+        p: 3,
+        cursor: 'pointer',
+        transition: '0.3s',
+        '&:hover': {
+          boxShadow: 3,
+        }
       }}
     >
       <CustomText variant="subtitle1" fontWeight="bold" gutterBottom>

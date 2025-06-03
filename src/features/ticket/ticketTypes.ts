@@ -18,6 +18,24 @@ export interface Ticket {
   ratingComment?: string | null;
   customerId: number;
   responsible?: string | null;
+  comments: TicketComment[];
+  updateHistory: TicketUpdate[];
+}
+
+export interface TicketComment {
+  id: number;
+  userName: string;
+  updatedAt: string;
+  comment: string;
+}
+
+export interface TicketUpdate {
+  id: number;
+  userName: string;
+  updateTypeId: number;
+  oldValue: string;
+  newValue: string;
+  updateAt: string;
 }
 
 export type TicketFilters = {

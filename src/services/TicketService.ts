@@ -35,7 +35,11 @@ const TicketService = {
       },
     });
     return response.data.content;
-  }
+  },
+  getTicketById: async (id: number): Promise<Ticket> => {
+    const response = await get<Ticket>(`/tickets/${id}`);
+    return response.data;
+  },
 }
 
 export default TicketService

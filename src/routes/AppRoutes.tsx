@@ -7,6 +7,7 @@ import NotFound from '../pages/NotFound/NotFound'
 import Login from '../pages/Login/Login'
 import AuthLayout from '../layouts/AuthLayout'
 import TicketList from '../pages/TicketList/TicketList'
+import TicketDetails from '../pages/TicketDetails/TicketDetails'
 
 const isAuthenticated = () => Boolean(localStorage.getItem('token'))
 
@@ -27,6 +28,7 @@ const AppRoutes = () => {
         <Route element={<MainLayout />}>
           <Route path='/dashboard' element={<Home />} />
           <Route path='/dashboard/tickets' element={<TicketList />} />
+          <Route path='/ticket/:id/details' element={<TicketDetails />} />
         </Route>
       </Route>
 
