@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { loginSchema, type LoginSchema } from '../../schemas/login.schema';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, type LoginSchema } from '../../schemas/login.schema';
 import { setUser } from '../../store/slices/authSlice';
 import { setToken } from '../../utils/token';
 import { 
@@ -12,11 +12,11 @@ import {
   CustomPaper, 
   CustomText 
 } from '../../components';
-import AuthService from '../../services/AuthService';
-import CustomerService from '../../services/CustomerService';
 import { type UserBasicInfo } from '../../features/user/userTypes';
 import { setCurrentCustomer, setCustomers } from '../../store/slices/customerSlice';
 import { isCustomer } from '../../utils/roles';
+import AuthService from '../../services/AuthService';
+import CustomerService from '../../services/CustomerService';
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();

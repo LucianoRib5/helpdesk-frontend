@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { userSchema, type UserSchema } from '../../schemas/user.schema';
 import type { CreateUserPayload } from '../../features/user/userTypes';
 import { 
@@ -12,13 +12,13 @@ import {
   CustomPaper, 
   CustomText 
 } from '../../components';
-import UserService  from '../../services/UserService';
-import CityService from '../../services/CityService';
 import type { City } from '../../types/city';
 import { toast } from 'react-toastify';
 import { formatCep } from '../../utils/formatCep';
 import { formatCnpj } from '../../utils/formatCnpj';
 import { formatCpf } from '../../utils/formatCpf';
+import UserService  from '../../services/UserService';
+import CityService from '../../services/CityService';
 
 const UserRegister: React.FC = () => {
   const [isCompany, setIsCompany] = useState(false);

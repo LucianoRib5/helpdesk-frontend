@@ -1,13 +1,15 @@
-import { CustomBox } from "../../components";
+import { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import type { Ticket } from "../../features/ticket/ticketTypes";
 import { formatDateToPtBR } from "../../utils/formatDate";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import CommentsCard from "../../components/CommentsCard";
-import TicketDetailsCard from "../../components/TicketDetailsCard";
-import UpdateHistoryCard from "../../components/UpdateHistoryCard";
+import type { Ticket } from "../../features/ticket/ticketTypes";
+import { 
+  CommentsCard, 
+  CustomBox, 
+  TicketDetailsCard, 
+  UpdateHistoryCard 
+} from "../../components";
 import TicketService from "../../services/TicketService";
 
 const TicketDetails: React.FC = () => {

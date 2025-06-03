@@ -1,4 +1,6 @@
 import CheckboxField from "./CheckboxField";
+import CloseTicketModal from "./CloseTicketModal";
+import CommentsCard from "./CommentsCard";
 import CustomAppBar from "./CustomAppBar";
 import CustomBox from "./CustomBox";
 import CustomButton from "./CustomButton";
@@ -8,12 +10,20 @@ import CustomList from "./CustomList";
 import CustomPaper from "./CustomPaper";
 import CustomText from "./CustomText";
 import CustomToolbar from "./CustomToolbar";
+import LastTickets from "./LastTickets";
 import NavListItem from "./NavListItem";
+import NewTicketForm from "./NewTicketForm";
+import ProtectedRoute from "./ProtectedRoute";
 import TicketCard from "./TicketCard";
+import TicketDetailsCard from "./TicketDetailsCard";
 import TicketFilter from "./TicketFilter";
+import UpdateHistoryCard from "./UpdateHistoryCard";
+
 
 export {
     CheckboxField,
+    CloseTicketModal,
+    CommentsCard,
     CustomAppBar,
     CustomBox,
     CustomButton,
@@ -23,7 +33,12 @@ export {
     CustomPaper,
     CustomText,
     CustomToolbar,
+    LastTickets,
     NavListItem,
+    NewTicketForm,
+    ProtectedRoute,
     TicketCard,
-    TicketFilter
+    TicketDetailsCard,
+    TicketFilter,
+    UpdateHistoryCard
 };

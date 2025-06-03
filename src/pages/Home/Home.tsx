@@ -1,14 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { CustomBox } from "../../components";
-import LastTickets from "../../components/LastTickets";
-import { NewTicketForm } from "../../components/NewTicketForm";
-import { useAppSelector } from "../../hooks/useAppSelector";
-import TicketService from "../../services/TicketService";
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setTickets } from "../../store/slices/ticketSlice";
 import { UserTypeEnum } from "../../features/user/userTypes";
 import { isCustomer } from "../../utils/roles";
+import { CustomBox, LastTickets, NewTicketForm } from "../../components";
+import TicketService from "../../services/TicketService";
 
 const Home: React.FC = () => {
     const { auth, customer } = useAppSelector((state) => state);

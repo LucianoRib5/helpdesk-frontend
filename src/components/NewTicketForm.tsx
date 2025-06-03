@@ -28,7 +28,7 @@ interface NewTicketFormProps {
   user: UserBasicInfo
 }
 
-export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
+const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
   const { customers, currentCustomer } = useAppSelector((state) => state.customer);
   const dispatch = useAppDispatch();
 
@@ -227,3 +227,5 @@ export const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
     </CustomPaper>
   );
 };
+
+export default NewTicketForm;
