@@ -6,6 +6,8 @@ export const userSchema = z.object({
   cpf: z.string().min(11, 'CPF inválido'),
   cnpj: z.string().optional(),
   phoneNumber: z.string().min(8, 'Telefone inválido'),
+  cep: z.string().min(8, 'CEP inválido'),
+  address: z.string().min(1, 'Endereço é obrigatório'),
   password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {

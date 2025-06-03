@@ -5,6 +5,8 @@ export interface CreateUserPayload {
     cpf: string;
     cnpj?: string | null;
     phoneNumber: string;
+    address: string;
+    cityId: number;
 }
 
 export const UserTypeEnum = {
