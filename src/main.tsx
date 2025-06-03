@@ -7,6 +7,8 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/theme.ts';
 import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './routes/AppRoutes.tsx'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const queryClient = new QueryClient()
 
@@ -17,6 +19,7 @@ createRoot(document.getElementById('root')!).render(
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <BrowserRouter>
+            <ToastContainer />
             <AppRoutes />
           </BrowserRouter>
         </ThemeProvider>
