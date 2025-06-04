@@ -22,6 +22,12 @@ const TicketDetails: React.FC = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
 
+  const invalidateTicketDetails = () => {
+    queryClient.invalidateQueries({
+      queryKey: ['ticketDetails', id],
+    });
+  }
+
   const { data, isLoading, error } = useQuery({
     queryKey: ['ticketDetails', id],
     queryFn: async () => await TicketService.getTicketById(Number(id)),
@@ -37,9 +43,7 @@ const TicketDetails: React.FC = () => {
   const mutation = useMutation({
     mutationFn: (data: CloseTicketPayload) => TicketService.closeTicket(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['ticketDetails', id],
-      });
+      invalidateTicketDetails();
       toast.success('Chamado fechado com sucesso!', {
         autoClose: 3000,
         theme: "colored",
@@ -81,7 +85,7 @@ const TicketDetails: React.FC = () => {
               status={ticket.statusId}
               userType={user.userType}
               onStatusChange={(status) => console.log('Novo status:', status)}
-              onUpdate={() => console.log('Atualizar chamado')}
+              onUpdate={invalidateTicketDetails}
               onCloseTicket={() => setOpenCloseTicketModal(true)}
             />
             <CommentsCard
