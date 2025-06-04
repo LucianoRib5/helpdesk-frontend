@@ -1,21 +1,26 @@
 import { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDateToPtBR } from "../../utils/formatDate";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import type { Ticket } from "../../features/ticket/ticketTypes";
+import { toast } from 'react-toastify';
+import type { CloseTicketPayload, Ticket } from "../../features/ticket/ticketTypes";
 import { 
+  CloseTicketModal,
   CommentsCard, 
   CustomBox, 
   TicketDetailsCard, 
   UpdateHistoryCard 
 } from "../../components";
 import TicketService from "../../services/TicketService";
+import type { AxiosError } from "axios";
 
 const TicketDetails: React.FC = () => {
   const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [openCloseTicketModal, setOpenCloseTicketModal] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['ticketDetails', id],
@@ -27,7 +32,40 @@ const TicketDetails: React.FC = () => {
     if (data && !isLoading && !error) {
       setTicket(data);
     }
-  }, [isLoading, data, error]); 
+  }, [isLoading, data, error]);
+
+  const mutation = useMutation({
+    mutationFn: (data: CloseTicketPayload) => TicketService.closeTicket(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['ticketDetails', id],
+      });
+      toast.success('Chamado fechado com sucesso!', {
+        autoClose: 3000,
+        theme: "colored",
+      });
+      setOpenCloseTicketModal(false);
+    },
+    onError: (error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message,
+        {
+          autoClose: 3000,
+          theme: "colored",
+        }
+      )
+    }
+  });
+
+  const handleSubmit = (rating: number | null, ratingComment: string | null) => {
+    if (!ticket) return;
+
+    mutation.mutate({
+      ticketId: ticket.id,
+      rating,
+      ratingComment,
+    });
+  };
 
   return (
     <CustomBox sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -44,7 +82,7 @@ const TicketDetails: React.FC = () => {
               userType={user.userType}
               onStatusChange={(status) => console.log('Novo status:', status)}
               onUpdate={() => console.log('Atualizar chamado')}
-              onCloseTicket={() => console.log('Encerrar chamado')}
+              onCloseTicket={() => setOpenCloseTicketModal(true)}
             />
             <CommentsCard
               comments={ticket.comments}
@@ -54,6 +92,11 @@ const TicketDetails: React.FC = () => {
           </>
         )
       }
+      <CloseTicketModal 
+        open={openCloseTicketModal}
+        onClose={() => setOpenCloseTicketModal(false)}
+        onConfirm={handleSubmit}
+      />
     </CustomBox>
   )
 }

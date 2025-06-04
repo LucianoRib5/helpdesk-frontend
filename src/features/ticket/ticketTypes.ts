@@ -84,3 +84,9 @@ export const TicketStatusLabels: Record<TicketStatus, string> = {
   [TicketStatus.AWAITING_EVALUATION]: 'Aguardando Avaliação',
   [TicketStatus.CLOSED]: 'Fechado',
 };
+
+export interface CloseTicketPayload {
+  ratingComment: string | null;
+  rating: number | null;
+  ticketId: number;
+}

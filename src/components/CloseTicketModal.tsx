@@ -13,7 +13,7 @@ import {
 interface CloseTicketModalProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (comment: string, rating: number) => void;
+  onConfirm: (rating: number | null, ratingComment: string | null) => void;
 }
 
 const CloseTicketModal: React.FC<CloseTicketModalProps> = ({
@@ -21,29 +21,33 @@ const CloseTicketModal: React.FC<CloseTicketModalProps> = ({
   onClose,
   onConfirm,
 }) => {
-  const [comment, setComment] = useState('');
-  const [rating, setRating] = useState<number | null>(0);
+  const [rating, setRating] = useState<number | null>(null);
+  const [ratingComment, setRatingComment] = useState<string | null>();
 
   const handleConfirm = () => {
-    if (rating !== null) {
-      onConfirm(comment.trim(), rating);
-      setComment('');
-      setRating(0);
-    }
+    onConfirm(rating, ratingComment?.trim() || null);
+    setRatingComment('');
+    setRating(0);
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Encerrar Chamado</DialogTitle>
       <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2} mt={1}>
+        <Box 
+          display="flex" 
+          flexDirection="column" 
+          gap={2} 
+          mt={1} 
+          sx={{ width: '500px' }}
+        >
           <TextField
             multiline
             minRows={4}
             placeholder="Adicionar comentário..."
             variant="outlined"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            value={ratingComment}
+            onChange={(e) => setRatingComment(e.target.value)}
             fullWidth
             sx={{ borderRadius: '8px' }}
           />
