@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import type { TicketUpdate } from '../features/ticket/ticketTypes';
+import { timeAgo } from '../utils/timeAgo';
 
 interface UpdateHistoryCardProps {
   updates: TicketUpdate[];
@@ -24,14 +25,14 @@ const UpdateHistoryCard: React.FC<UpdateHistoryCardProps> = ({ updates }) => {
         updates.length > 0 ? (
           updates.map((update) => (
             <Box
-              key={update.id}
+              key={update.timestamp}
               display="flex"
               justifyContent="space-between"
               alignItems="flex-start"
             >
-              <Typography fontSize="14px">{update.newValue}</Typography>
+              <Typography fontSize="14px">{update.message}</Typography>
               <Typography fontSize="12px" color="text.secondary">
-                {update.updateAt}
+                {timeAgo(update.timestamp)}
               </Typography>
             </Box>
           ))

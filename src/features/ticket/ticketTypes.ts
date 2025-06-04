@@ -30,12 +30,8 @@ export interface TicketComment {
 }
 
 export interface TicketUpdate {
-  id: number;
-  userName: string;
-  updateTypeId: number;
-  oldValue: string;
-  newValue: string;
-  updateAt: string;
+  message: string;
+  timestamp: string;
 }
 
 export type TicketFilters = {
