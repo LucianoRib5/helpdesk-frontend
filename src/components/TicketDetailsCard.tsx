@@ -17,9 +17,9 @@ interface TicketDetailsCardProps {
   createdAt: string;
   status: number;
   userType: string;
-  onStatusChange?: (status: number) => void;
-  onUpdate?: () => void;
-  onCloseTicket?: () => void;
+  onStatusChange: (status: number) => void;
+  onUpdate: () => void;
+  onCloseTicket: () => void;
 }
 
 const TicketDetailsCard: React.FC<TicketDetailsCardProps> = ({
@@ -34,8 +34,8 @@ const TicketDetailsCard: React.FC<TicketDetailsCardProps> = ({
   onUpdate,
   onCloseTicket,
 }) => {
-  const handleStatusChange = (event: SelectChangeEvent) => {
-    onStatusChange?.(Number(event.target.value));
+  const handleStatusChange = (event: SelectChangeEvent<string>) => {
+    onStatusChange(Number(event.target.value));
   };
 
   const handleUpdateButton = () => (
@@ -79,12 +79,20 @@ const TicketDetailsCard: React.FC<TicketDetailsCardProps> = ({
             <Typography variant="body2">Status:</Typography>
             <Select
               size="small"
-              value={status}
-              // onChange={handleStatusChange}
+              value={String(status)}
+              onChange={handleStatusChange}
               sx={{ fontSize: '14px', minWidth: 180 }}
+              disabled={status === TicketStatus.CLOSED}
             >
-              <MenuItem value="Em Progresso">Em Progresso</MenuItem>
-              <MenuItem value="Aguardando avaliação">Aguardando avaliação</MenuItem>
+              <MenuItem value={String(TicketStatus.OPEN)}>
+                {TicketStatusLabels[TicketStatus.OPEN]}
+              </MenuItem>
+              <MenuItem value={String(TicketStatus.IN_PROGRESS)}>
+                {TicketStatusLabels[TicketStatus.IN_PROGRESS]}
+              </MenuItem>
+              <MenuItem value={String(TicketStatus.AWAITING_EVALUATION)}>
+                {TicketStatusLabels[TicketStatus.AWAITING_EVALUATION]}
+              </MenuItem>
             </Select>
             {handleUpdateButton()}
           </Box>

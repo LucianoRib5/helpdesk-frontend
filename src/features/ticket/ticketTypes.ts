@@ -92,3 +92,9 @@ export interface AddCommentPayload {
   comment: string;
   userId: number;
 }
+
+export interface ChangeTicketStatusPayload {
+  ticketId: number;
+  statusId: number;
+  updatedById: number;
+}

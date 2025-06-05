@@ -1,5 +1,6 @@
 import type { 
   AddCommentPayload,
+  ChangeTicketStatusPayload,
   CloseTicketPayload, 
   CreateTicketPayload, 
   Ticket, 
@@ -60,6 +61,14 @@ const TicketService = {
       userId,
     });
   },
+  changeTicketStatus: async (payload: ChangeTicketStatusPayload) => {
+    const { ticketId, statusId, updatedById } = payload;
+    console.log('Changing ticket status:', payload);
+    return put<never>(`/tickets/${ticketId}/change-status`, {
+      statusId,
+      updatedById
+    });
+  }
 }
 
 export default TicketService

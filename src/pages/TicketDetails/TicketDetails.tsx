@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDateToPtBR } from "../../utils/formatDate";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { toast } from 'react-toastify';
-import type { AddCommentPayload, CloseTicketPayload, Ticket } from "../../features/ticket/ticketTypes";
+import type { AddCommentPayload, ChangeTicketStatusPayload, CloseTicketPayload, Ticket } from "../../features/ticket/ticketTypes";
 import { 
   CloseTicketModal,
   CommentsCard, 
@@ -97,6 +97,32 @@ const TicketDetails: React.FC = () => {
     });
   }
 
+    const changeStatus = useMutation({
+    mutationFn: (data: ChangeTicketStatusPayload) => TicketService.changeTicketStatus(data),
+    onSuccess: () => {
+      invalidateTicketDetails();
+    },
+    onError: (error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message,
+        {
+          autoClose: 3000,
+          theme: "colored",
+        }
+      )
+    }
+  });
+
+  const handleChangeStatusSubmit = (statusId: number) => {
+    if (!ticket || !user) return;
+
+    changeStatus.mutate({
+      ticketId: ticket.id,
+      statusId,
+      updatedById: user.userId,
+    });
+  }
+
   return (
     <CustomBox sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       {
@@ -110,7 +136,7 @@ const TicketDetails: React.FC = () => {
               createdAt={formatDateToPtBR(ticket.createdAt)}
               status={ticket.statusId}
               userType={user.userType}
-              onStatusChange={(status) => console.log('Novo status:', status)}
+              onStatusChange={(statusId) => handleChangeStatusSubmit(statusId)}
               onUpdate={invalidateTicketDetails}
               onCloseTicket={() => setOpenCloseTicketModal(true)}
             />
