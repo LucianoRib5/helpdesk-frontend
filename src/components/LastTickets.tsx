@@ -1,6 +1,7 @@
-import { List, ListItem, ListItemText } from '@mui/material';
+import { Link, List, ListItem, ListItemText } from '@mui/material';
 import { CustomBox, CustomPaper, CustomText } from '../components';
 import { useAppSelector } from '../hooks/useAppSelector';
+import { Link as LinkRouter} from "react-router-dom";
 
 const LastTickets: React.FC = () => {
   const { tickets } = useAppSelector((state) => state.ticket);
@@ -37,9 +38,9 @@ const LastTickets: React.FC = () => {
                 <ListItem key={ticket.id} disableGutters disablePadding>
                   <ListItemText
                   primary={
-                    <CustomText variant='body2' fontWeight={500}>
-                    {`#${String(ticket.id).padStart(3, '0')} - ${ticket.title}`}
-                    </CustomText>
+                    <Link component={LinkRouter} to={`/ticket/${ticket.id}/details`}>
+                      {`#${String(ticket.id).padStart(3, '0')} - ${ticket.title}`}
+                    </Link>
                   }
                   />
                 </ListItem>
