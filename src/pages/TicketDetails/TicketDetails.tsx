@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDateToPtBR } from "../../utils/formatDate";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { toast } from 'react-toastify';
-import type { CloseTicketPayload, Ticket } from "../../features/ticket/ticketTypes";
+import type { AddCommentPayload, CloseTicketPayload, Ticket } from "../../features/ticket/ticketTypes";
 import { 
   CloseTicketModal,
   CommentsCard, 
@@ -40,7 +40,7 @@ const TicketDetails: React.FC = () => {
     }
   }, [isLoading, data, error]);
 
-  const mutation = useMutation({
+  const closeTicket = useMutation({
     mutationFn: (data: CloseTicketPayload) => TicketService.closeTicket(data),
     onSuccess: () => {
       invalidateTicketDetails();
@@ -61,15 +61,41 @@ const TicketDetails: React.FC = () => {
     }
   });
 
-  const handleSubmit = (rating: number | null, ratingComment: string | null) => {
+  const handleCloseTicketSubmit = (rating: number | null, ratingComment: string | null) => {
     if (!ticket) return;
 
-    mutation.mutate({
+    closeTicket.mutate({
       ticketId: ticket.id,
       rating,
       ratingComment,
     });
   };
+
+  const addComment = useMutation({
+    mutationFn: (data: AddCommentPayload) => TicketService.addComment(data),
+    onSuccess: () => {
+      invalidateTicketDetails();
+    },
+    onError: (error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message,
+        {
+          autoClose: 3000,
+          theme: "colored",
+        }
+      )
+    }
+  });
+
+  const handleCommentSubmit = (message: string) => {
+    if (!ticket || !user) return;
+
+    addComment.mutate({
+      ticketId: ticket.id,
+      comment: message,
+      userId: user.userId,
+    });
+  }
 
   return (
     <CustomBox sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -90,7 +116,8 @@ const TicketDetails: React.FC = () => {
             />
             <CommentsCard
               comments={ticket.comments}
-              onCommentSubmit={(msg) => console.log('Novo comentário:', msg)}
+              ticketStatus={ticket.statusId}
+              onCommentSubmit={(comment) => handleCommentSubmit(comment)}
             />
             <UpdateHistoryCard updates={ticket.updateHistory} />
           </>
@@ -99,7 +126,7 @@ const TicketDetails: React.FC = () => {
       <CloseTicketModal 
         open={openCloseTicketModal}
         onClose={() => setOpenCloseTicketModal(false)}
-        onConfirm={handleSubmit}
+        onConfirm={handleCloseTicketSubmit}
       />
     </CustomBox>
   )

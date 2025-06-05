@@ -86,3 +86,9 @@ export interface CloseTicketPayload {
   rating: number | null;
   ticketId: number;
 }
+
+export interface AddCommentPayload {
+  ticketId: number;
+  comment: string;
+  userId: number;
+}

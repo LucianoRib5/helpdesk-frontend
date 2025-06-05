@@ -1,4 +1,5 @@
 import type { 
+  AddCommentPayload,
   CloseTicketPayload, 
   CreateTicketPayload, 
   Ticket, 
@@ -51,7 +52,14 @@ const TicketService = {
       rating,
       ratingComment,
     });
-  }
+  },
+  addComment: async (payload: AddCommentPayload) => {
+    const { comment, userId } = payload;
+    return post<never>(`/tickets/${payload.ticketId}/add-comment`, {
+      comment,
+      userId,
+    });
+  },
 }
 
 export default TicketService

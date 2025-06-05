@@ -6,16 +6,19 @@ import {
   TextField,
   IconButton,
 } from '@mui/material';
-import type { TicketComment } from '../features/ticket/ticketTypes';
+import { TicketStatus, type TicketComment } from '../features/ticket/ticketTypes';
 import SendIcon from '@mui/icons-material/Send';
+import { timeAgo } from '../utils/timeAgo';
 
 interface CommentsCardProps {
   comments: TicketComment[];
+  ticketStatus: number;
   onCommentSubmit?: (message: string) => void;
 }
 
 const CommentsCard: React.FC<CommentsCardProps> = ({
   comments,
+  ticketStatus,
   onCommentSubmit,
 }) => {
   const [message, setMessage] = useState('');
@@ -52,7 +55,7 @@ const CommentsCard: React.FC<CommentsCardProps> = ({
                 </Typography>
                 <Typography fontSize="14px">{comment.comment}</Typography>
                 <Typography fontSize="12px" color="text.secondary">
-                  {comment.updatedAt}
+                  {timeAgo(comment.updatedAt)}
                 </Typography>
               </Box>
             </Box>
@@ -83,6 +86,7 @@ const CommentsCard: React.FC<CommentsCardProps> = ({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          disabled={ticketStatus === TicketStatus.CLOSED}
           sx={{ fontSize: '14px' }}
         />
         <IconButton onClick={handleSend} sx={{ color: '#666' }}>
