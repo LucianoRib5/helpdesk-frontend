@@ -9,3 +9,8 @@ export const isCustomer = (userType: string | undefined): boolean => {
     if (!userType) return false;
     return userType === UserTypeEnum.CUSTOMER;
 }
+
+export const isTechnician = (userType: string | undefined): boolean => {
+    if (!userType) return false;
+    return userType === UserTypeEnum.TECHNICIAN;
+}

@@ -2,7 +2,7 @@ import { CustomBox, CustomText, TicketCard, TicketFilter } from '../../component
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { TicketStatus, TicketStatusLabels, type TicketFilterForm } from '../../features/ticket/ticketTypes';
 import { formatDateToPtBR } from '../../utils/formatDate';
-import { isCustomer } from '../../utils/roles';
+import { isCustomer, isTechnician } from '../../utils/roles';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { setTickets } from '../../store/slices/ticketSlice';
 import TicketService from '../../services/TicketService';
@@ -10,6 +10,7 @@ import TicketService from '../../services/TicketService';
 const TicketList: React.FC = () => {
   const { 
     customer: { currentCustomer},
+    technician: { currentTechnician },
     auth: { user },
     ticket: { tickets }  
   } = useAppSelector((state) => state);
@@ -19,12 +20,16 @@ const TicketList: React.FC = () => {
   const getTickets = async (filters: TicketFilterForm) => {
     if (!user) return [];
       if (isCustomer(user.userType) && currentCustomer) {
-        const customerTickets = await TicketService.getTicketsByCustomerId(currentCustomer.id, filters);
+        const customerTickets = await TicketService.getTicketsByUserRoleId(currentCustomer.id, user.userType, undefined, filters);
         dispatch(setTickets(customerTickets));
+        return;
+      } else if (isTechnician(user.userType) && currentTechnician) {
+        const technicianTickets = await TicketService.getTicketsByUserRoleId(currentTechnician.id, user.userType, undefined, filters);
+        dispatch(setTickets(technicianTickets));
         return;
       }
 
-    const allTickets = await TicketService.getAllTickets(filters);
+    const allTickets = await TicketService.getAllTickets(undefined, filters);
     dispatch(setTickets(allTickets));
   }
   

@@ -14,9 +14,11 @@ import {
 } from '../../components';
 import { type UserBasicInfo } from '../../features/user/userTypes';
 import { setCurrentCustomer, setCustomers } from '../../store/slices/customerSlice';
-import { isCustomer } from '../../utils/roles';
+import { isCustomer, isTechnician } from '../../utils/roles';
 import AuthService from '../../services/AuthService';
 import CustomerService from '../../services/CustomerService';
+import { setTechnician } from '../../store/slices/technicianSlice';
+import TechnicianService from '../../services/TechnicianService';
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +44,12 @@ const Login: React.FC = () => {
       } catch (error) {
         console.error('Erro ao buscar customer:', error);
       }
-    } else {
+    } else if (isTechnician(user.userType)) {
+      const technician = await TechnicianService.getTechnicianByUserId(user.userId);
+      dispatch(setTechnician(technician));
+      navigate('/dashboard');
+    }
+    else {
       try {
         const customers = await CustomerService.getAllCustomers();
         dispatch(setCustomers(customers));

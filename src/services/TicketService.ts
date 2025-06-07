@@ -6,6 +6,7 @@ import type {
   Ticket, 
   TicketFilters 
 } from '../features/ticket/ticketTypes'
+import { UserTypeId } from '../features/user/userTypes'
 import type { PaginatedResponse } from '../types/paginatedResponse'
 import ApiService from './ApiService'
 
@@ -15,11 +16,18 @@ const TicketService = {
   createTicket: async (payload: CreateTicketPayload) => {
     return post<Ticket>('/tickets', payload)
   },
-  getTicketsByCustomerId: async (customerId: number, filters: TicketFilters = {}) => {
-    const response = await get<PaginatedResponse<Ticket>>(`/tickets/customer/${customerId}`, {
+  getTicketsByUserRoleId: async (
+    userRoleId: number,
+    userType: string,
+    statusId?: number,
+    filters: TicketFilters = {}
+  ) => {
+    const userTypeId = UserTypeId[userType as keyof typeof UserTypeId];
+    const response = await get<PaginatedResponse<Ticket>>(`/tickets/by-user-role/${userRoleId}`, {
       params: {
+        userTypeId,
         title: filters.title,
-        status: filters.status,
+        status: filters.status ?? statusId,
         priority: filters.priority,
         page: filters.page ?? 0,
         size: filters.size ?? 10,
@@ -29,11 +37,11 @@ const TicketService = {
     })
     return response.data.content;
   },
-  getAllTickets: async (filters: TicketFilters = {}): Promise<Ticket[]> => {
+  getAllTickets: async (statusId?: number, filters: TicketFilters = {}): Promise<Ticket[]> => {
     const response = await get<PaginatedResponse<Ticket>>('/tickets', {
       params: {
         title: filters.title,
-        status: filters.status,
+        status: filters.status ?? statusId,
         priority: filters.priority,
         page: filters.page ?? 0,
         size: filters.size ?? 10,
