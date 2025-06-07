@@ -18,6 +18,15 @@ export const UserTypeEnum = {
 
 export type UserTypeEnum = (typeof UserTypeEnum)[keyof typeof UserTypeEnum];
 
+export const UserTypeId = {
+    CUSTOMER: 1,
+    SUPPORT_OPERATOR: 2,
+    TECHNICIAN: 3,
+    ADMINISTRATOR: 4
+} as const;
+
+export type UserTypeId = (typeof UserTypeId)[keyof typeof UserTypeId];
+
 export interface UserPermission {
     canCreateTicket: boolean;
     canEditTicket: boolean;
