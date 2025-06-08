@@ -23,7 +23,7 @@ import { useAppDispatch } from '../hooks/useAppDispatch';
 import { priorities, type CreateTicketPayload } from '../features/ticket/ticketTypes';
 import { UserTypeEnum, type UserBasicInfo } from '../features/user/userTypes';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { addTicket } from '../store/slices/ticketSlice';
+import { addTicket, setTicketToEdit } from '../store/slices/ticketSlice';
 import { isCustomer } from '../utils/roles';
 import { useEffect } from 'react';
 import type { AxiosError } from 'axios';
@@ -96,7 +96,10 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({
         clearForm();
       }
       
-      if (editMode) setEditMode?.(false);
+      if (editMode) { 
+        setEditMode?.(false)
+        dispatch(setTicketToEdit(null));
+      };
 
       setTimeout(() => {
         if (asModal && onClose) onClose();
