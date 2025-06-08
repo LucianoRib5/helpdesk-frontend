@@ -5,16 +5,25 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { setTickets } from '../../store/slices/ticketSlice';
 import { UserTypeEnum } from '../../features/user/userTypes';
 import { isCustomer, isTechnician } from '../../utils/roles';
-import { CustomBox, CustomText, LastTickets, NewTicketForm, TicketAssignCard, TicketCard } from '../../components';
+import { 
+  CustomBox, 
+  CustomText, 
+  LastTickets, 
+  NewTicketForm, 
+  TicketAssignCard, 
+  TicketCard 
+} from '../../components';
 import { priorities, TicketStatus, TicketStatusLabels } from '../../features/ticket/ticketTypes';
 import { formatDateToPtBR } from '../../utils/formatDate';
+import { setTechnicians } from '../../store/slices/technicianSlice';
+import { Button } from '@mui/material';
 import TicketService from '../../services/TicketService';
 import TechnicianAssignCart from '../../components/TechnicianAssignCart';
 import TechnicianService from '../../services/TechnicianService';
-import { setTechnicians } from '../../store/slices/technicianSlice';
 
 const Home: React.FC = () => {
   const [selectedTicketIds, setSelectedTicketIds] = useState<number[]>([]);
+  const [showModal, setShowModal] = useState(false);
   const { auth, customer, technician, ticket } = useAppSelector((state) => state);
   const { user } = auth;
 
@@ -114,9 +123,28 @@ const Home: React.FC = () => {
     ) : (
       <CustomBox sx={{ display: 'flex', gap: 2 }}>
         <CustomBox sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '60%' }}>
-          <CustomText variant='h5' fontWeight='bold' gutterBottom>
-            Chamados abertos
-          </CustomText>
+          <CustomBox sx={{ 
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <CustomText variant='h5' fontWeight='bold' gutterBottom>
+              Chamados abertos
+            </CustomText>
+            <Button
+              type='submit'
+              variant='outlined'
+              sx={{
+                height: 40,
+                px: 4,
+                color: 'black',
+                fontWeight: 600,
+              }}
+              onClick={() => setShowModal(true)}
+            >
+              ABRIR CHAMADO
+            </Button>
+          </CustomBox> 
           {
             ticket.tickets.map((ticket) => {
               return (
@@ -134,6 +162,9 @@ const Home: React.FC = () => {
           }
         </CustomBox>
         <TechnicianAssignCart ticketIds={selectedTicketIds}/>
+        {showModal && user && (
+          <NewTicketForm user={user} asModal onClose={() => setShowModal(false)} />
+        )}
       </CustomBox>
     )}
   </CustomBox>

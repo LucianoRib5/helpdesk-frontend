@@ -4,6 +4,8 @@ import {
   Stack,
   FormHelperText,
   Autocomplete,
+  Dialog,
+  DialogContent
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +16,7 @@ import {
   CustomBox,
   CustomInput,
   CustomButton,
-} from '../components'
+} from '../components';
 import TicketService from '../services/TicketService';
 import { useMutation } from '@tanstack/react-query';
 import { useAppDispatch } from '../hooks/useAppDispatch';
@@ -25,10 +27,12 @@ import { addTicket } from '../store/slices/ticketSlice';
 import { isCustomer } from '../utils/roles';
 
 interface NewTicketFormProps {
-  user: UserBasicInfo
+  user: UserBasicInfo;
+  asModal?: boolean;
+  onClose?: () => void;
 }
 
-const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
+const NewTicketForm: React.FC<NewTicketFormProps> = ({ user, asModal = false, onClose }) => {
   const { customers, currentCustomer } = useAppSelector((state) => state.customer);
   const dispatch = useAppDispatch();
 
@@ -45,9 +49,7 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
       title: '',
       description: '',
       priorityId: 0,
-      customerId: isCustomer(user.userType) && currentCustomer
-        ? currentCustomer.id
-        : 0,
+      customerId: isCustomer(user.userType) && currentCustomer ? currentCustomer.id : 0,
     },
   });
 
@@ -55,26 +57,28 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
     setValue('title', '');
     setValue('description', '');
     setValue('priorityId', 0);
-    if(!isCustomer) setValue('customerId', 0);
-  }
+    if (!isCustomer(user.userType)) setValue('customerId', 0);
+  };
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: CreateTicketPayload) => TicketService.createTicket(data),
     onSuccess: (response) => {
       dispatch(addTicket(response.data));
       clearForm();
+      if (asModal && onClose) onClose();
     },
     onError: (error: any) => {
-        console.error('Error creating ticket:', error);
-    }
+      console.error('Error creating ticket:', error);
+    },
   });
 
   const onSubmit = (data: CreateTicketPayload) => {
     if (!user) return;
 
-    const customerId = user.userType === UserTypeEnum.CUSTOMER && currentCustomer
-      ? currentCustomer.id
-      : data.customerId;
+    const customerId =
+      user.userType === UserTypeEnum.CUSTOMER && currentCustomer
+        ? currentCustomer.id
+        : data.customerId;
 
     mutate({
       ...data,
@@ -86,30 +90,22 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
 
   const selectedPriority = watch('priorityId');
 
-  return (
-    <CustomPaper
-      elevation={1}
-      sx={{
-        p: 4,
-        borderRadius: 3,
-        maxWidth: 800,
-        boxShadow: '0px 2px 10px rgba(0,0,0,0.05)',
-      }}
-    >
-      <CustomText variant="h6" fontWeight="bold" gutterBottom>
+  const formContent = (
+    <>
+      <CustomText variant='h6' fontWeight='bold' gutterBottom>
         Abrir um novo chamado
       </CustomText>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <CustomBox mt={2}>
           <Controller
-            name="title"
+            name='title'
             control={control}
             render={({ field }) => (
               <CustomInput
                 {...field}
-                label="Título"
-                placeholder="Insira o título"
+                label='Título'
+                placeholder='Insira o título'
                 register={register(field.name)}
                 fieldError={errors.title}
               />
@@ -118,57 +114,53 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
         </CustomBox>
 
         <CustomBox mt={2}>
-          {
-            user?.userType !== UserTypeEnum.CUSTOMER && (
-              <>
-                <Controller
-                  name="customerId"
-                  control={control}
-                  render={({ field }) => {
-                    const selectedCustomer = customers.find((c) => c.id === field.value) || null;
+          {user?.userType !== UserTypeEnum.CUSTOMER && (
+            <Controller
+              name='customerId'
+              control={control}
+              render={({ field }) => {
+                const selectedCustomer = customers.find((c) => c.id === field.value) || null;
 
-                    return (
-                      <Autocomplete
-                        options={customers}
-                        value={selectedCustomer}
-                        getOptionLabel={(option) => option.name}
-                        filterOptions={(options, { inputValue }) => {
-                          const query = inputValue.toLowerCase().replace(/\D/g, '');
-                          return options.filter((customer) => {
-                            const cpf = customer.cpf.replace(/\D/g, '');
-                            const cnpj = (customer.cnpj || '').replace(/\D/g, '');
-                            return cpf.includes(query) || cnpj.includes(query);
-                          });
-                        }}
-                        onChange={(_, selected) => field.onChange(selected?.id || 0)}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        renderInput={(params) => (
-                          <CustomInput
-                            {...params}
-                            {...field}
-                            label="Buscar por CPF ou CNPJ"
-                            placeholder="Digite CPF ou CNPJ do cliente"
-                            fieldError={errors.customerId}
-                          />
-                        )}
+                return (
+                  <Autocomplete
+                    options={customers}
+                    value={selectedCustomer}
+                    getOptionLabel={(option) => option.name}
+                    filterOptions={(options, { inputValue }) => {
+                      const query = inputValue.toLowerCase().replace(/\D/g, '');
+                      return options.filter((customer) => {
+                        const cpf = customer.cpf.replace(/\D/g, '');
+                        const cnpj = (customer.cnpj || '').replace(/\D/g, '');
+                        return cpf.includes(query) || cnpj.includes(query);
+                      });
+                    }}
+                    onChange={(_, selected) => field.onChange(selected?.id || 0)}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    renderInput={(params) => (
+                      <CustomInput
+                        {...params}
+                        {...field}
+                        label='Buscar por CPF ou CNPJ'
+                        placeholder='Digite CPF ou CNPJ do cliente'
+                        fieldError={errors.customerId}
                       />
-                    );
-                  }}
-                />
-              </>
-            )
-          }
+                    )}
+                  />
+                );
+              }}
+            />
+          )}
         </CustomBox>
 
         <CustomBox mt={2}>
           <Controller
-            name="description"
+            name='description'
             control={control}
             render={({ field }) => (
               <CustomInput
                 {...field}
-                label="Descrição"
-                placeholder="Descreva o problema"
+                label='Descrição'
+                placeholder='Descreva o problema'
                 multiline
                 rows={4}
                 register={register(field.name)}
@@ -179,10 +171,10 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
         </CustomBox>
 
         <CustomBox mt={3}>
-          <CustomText variant="subtitle2" gutterBottom>
+          <CustomText variant='subtitle2' gutterBottom>
             Prioridade
           </CustomText>
-          <Stack direction="row" spacing={2}>
+          <Stack direction='row' spacing={2}>
             {priorities
               .filter((priority) => priority.id !== undefined)
               .map((priority) => (
@@ -202,8 +194,7 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
                   }
                   label={priority.label}
                 />
-              ))
-            }
+              ))}
           </Stack>
           {errors.priorityId && (
             <FormHelperText error>{errors.priorityId.message}</FormHelperText>
@@ -212,18 +203,42 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user }) => {
 
         <CustomBox mt={4}>
           <CustomButton
-            variant="contained"
+            variant='contained'
             disabled={isPending}
             sx={{
               borderRadius: 999,
               textTransform: 'none',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
             }}
           >
             Abrir chamado
           </CustomButton>
         </CustomBox>
       </form>
+    </>
+  );
+
+  if (asModal) {
+    return (
+      <Dialog open onClose={onClose} fullWidth maxWidth='md'>
+        <DialogContent dividers>
+          <CustomBox sx={{ p: 1 }}>{formContent}</CustomBox>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <CustomPaper
+      elevation={1}
+      sx={{
+        p: 4,
+        borderRadius: 3,
+        maxWidth: 800,
+        boxShadow: '0px 2px 10px rgba(0,0,0,0.05)',
+      }}
+    >
+      {formContent}
     </CustomPaper>
   );
 };
