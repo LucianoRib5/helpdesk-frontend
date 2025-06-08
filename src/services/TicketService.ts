@@ -95,6 +95,9 @@ const TicketService = {
     return post<never>(`/tickets/assign-to-technician/${technicianId}`, {
       ticketIds
     });
+  },
+  updateTicket: async (payload: CreateTicketPayload, ticketId: number) => {
+    return (await put<Ticket>(`/tickets/${ticketId}`, payload));
   }
 }
 

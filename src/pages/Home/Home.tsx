@@ -24,6 +24,7 @@ import TechnicianService from '../../services/TechnicianService';
 const Home: React.FC = () => {
   const [selectedTicketIds, setSelectedTicketIds] = useState<number[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const { auth, customer, technician, ticket } = useAppSelector((state) => state);
   const { user } = auth;
 
@@ -149,11 +150,13 @@ const Home: React.FC = () => {
             ticket.tickets.map((ticket) => {
               return (
                 <TicketAssignCard
+                  id={ticket.id}
                   key={ticket.id}
                   description={ticket.description}
                   title={ticket.title}
                   status={TicketStatusLabels[ticket.statusId as TicketStatus] || 'Desconhecido'}
-                  onEdit={() => console.log(`Edit ticket ${ticket.id}`)}
+                  setShowModal={setShowModal}
+                  setEditMode={setEditMode}
                   checked={selectedTicketIds.includes(ticket.id)}
                   onCheckChange={(checked) => handleCheckboxChange(ticket.id, checked)}
                 />
@@ -163,7 +166,13 @@ const Home: React.FC = () => {
         </CustomBox>
         <TechnicianAssignCart ticketIds={selectedTicketIds}/>
         {showModal && user && (
-          <NewTicketForm user={user} asModal onClose={() => setShowModal(false)} />
+          <NewTicketForm 
+            user={user} 
+            asModal 
+            onClose={() => setShowModal(false)} 
+            editMode={editMode}
+            setEditMode={setEditMode}
+          />
         )}
       </CustomBox>
     )}

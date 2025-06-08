@@ -3,11 +3,13 @@ import type { Ticket, TicketReportData } from '../../features/ticket/ticketTypes
 
 interface TicketState {
   tickets: Ticket[];
+  ticketToEdit: Ticket | null;
   reportData: TicketReportData | null;
 }
 
 const initialState: TicketState = {
   tickets: [],
+  ticketToEdit: null,
   reportData: null,
 };
 
@@ -33,6 +35,9 @@ const ticketSlice = createSlice({
     setReportData: (state, action: PayloadAction<TicketReportData | null>) => {
       state.reportData = action.payload;
     },
+    setTicketToEdit: (state, action: PayloadAction<Ticket | null>) => {
+      state.ticketToEdit = action.payload;
+    }
   },
 });
 
@@ -41,7 +46,8 @@ export const {
   addTicket, 
   updateTicket, 
   deleteTicket, 
-  setReportData 
+  setReportData,
+  setTicketToEdit
 } = ticketSlice.actions;
 
 export default ticketSlice.reducer;

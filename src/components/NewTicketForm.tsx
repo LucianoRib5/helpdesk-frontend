@@ -18,23 +18,36 @@ import {
   CustomButton,
 } from '../components';
 import TicketService from '../services/TicketService';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { priorities, type CreateTicketPayload } from '../features/ticket/ticketTypes';
 import { UserTypeEnum, type UserBasicInfo } from '../features/user/userTypes';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { addTicket } from '../store/slices/ticketSlice';
 import { isCustomer } from '../utils/roles';
+import { useEffect } from 'react';
+import type { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 interface NewTicketFormProps {
   user: UserBasicInfo;
   asModal?: boolean;
+  editMode?: boolean;
   onClose?: () => void;
+  setEditMode?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const NewTicketForm: React.FC<NewTicketFormProps> = ({ user, asModal = false, onClose }) => {
+const NewTicketForm: React.FC<NewTicketFormProps> = ({ 
+  user, 
+  asModal = false,
+  editMode = false, 
+  onClose,
+  setEditMode
+}) => {
   const { customers, currentCustomer } = useAppSelector((state) => state.customer);
+  const { ticketToEdit } = useAppSelector((state) => state.ticket);
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -60,16 +73,44 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user, asModal = false, on
     if (!isCustomer(user.userType)) setValue('customerId', 0);
   };
 
+  const handleTicketSave = async (data: CreateTicketPayload) => {
+    if (editMode && ticketToEdit) {
+      return await TicketService.updateTicket(data, ticketToEdit.id);
+    }
+    return await TicketService.createTicket(data);
+  };
+
+  const invalidateTickets = () => {
+    queryClient.invalidateQueries({
+      queryKey: ['tickets'],
+    });
+  }
+
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: CreateTicketPayload) => TicketService.createTicket(data),
+    mutationFn: handleTicketSave,
     onSuccess: (response) => {
-      dispatch(addTicket(response.data));
-      clearForm();
-      if (asModal && onClose) onClose();
+      invalidateTickets();
+
+      if (!editMode) {
+        dispatch(addTicket(response.data));
+        clearForm();
+      }
+      
+      if (editMode) setEditMode?.(false);
+
+      setTimeout(() => {
+        if (asModal && onClose) onClose();
+      }, 100);
     },
-    onError: (error: any) => {
-      console.error('Error creating ticket:', error);
-    },
+    onError: (error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message,
+        {
+          autoClose: 3000,
+          theme: 'colored',
+        }
+      )
+    }
   });
 
   const onSubmit = (data: CreateTicketPayload) => {
@@ -90,10 +131,19 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user, asModal = false, on
 
   const selectedPriority = watch('priorityId');
 
+  useEffect(() => {
+    if (ticketToEdit) {
+      setValue('title', ticketToEdit.title);
+      setValue('description', ticketToEdit.description);
+      setValue('priorityId', ticketToEdit.priorityId);
+      setValue('customerId', ticketToEdit.customerId);
+    }
+  }, [ticketToEdit, setValue]);
+
   const formContent = (
     <>
       <CustomText variant='h6' fontWeight='bold' gutterBottom>
-        Abrir um novo chamado
+        { editMode ? 'Editar Chamado' : 'Abrir um novo chamado' }
       </CustomText>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -211,7 +261,7 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({ user, asModal = false, on
               fontWeight: 'bold',
             }}
           >
-            Abrir chamado
+            { editMode ? 'Salvar' : 'Abrir Chamado' }
           </CustomButton>
         </CustomBox>
       </form>
