@@ -1,5 +1,6 @@
 import type { 
   AddCommentPayload,
+  AssignMultipleTicketsPayload,
   ChangeTicketStatusPayload,
   CloseTicketPayload, 
   CreateTicketPayload, 
@@ -39,7 +40,7 @@ const TicketService = {
     })
     return response.data.content;
   },
-  getAllTickets: async (statusId?: number, filters: TicketFilters = {}): Promise<Ticket[]> => {
+  getAllTickets: async (statusId?: number, notAssigned?: boolean, filters: TicketFilters = {}): Promise<Ticket[]> => {
     const response = await get<PaginatedResponse<Ticket>>('/tickets', {
       params: {
         title: filters.title,
@@ -49,6 +50,7 @@ const TicketService = {
         size: filters.size ?? 10,
         sortBy: filters.sortBy ?? 'createdAt',
         sortDir: filters.sortDir ?? 'desc',
+        notAssigned: notAssigned ?? false,
       },
     });
     return response.data.content;
@@ -87,6 +89,12 @@ const TicketService = {
       priorities,
       statuses
     }).then(response => response.data);
+  },
+  assignMultipleTickets: async (payload: AssignMultipleTicketsPayload) => {
+    const { ticketIds, technicianId } = payload;
+    return post<never>(`/tickets/assign-to-technician/${technicianId}`, {
+      ticketIds
+    });
   }
 }
 

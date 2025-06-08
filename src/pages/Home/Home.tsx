@@ -1,16 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { setTickets } from '../../store/slices/ticketSlice';
 import { UserTypeEnum } from '../../features/user/userTypes';
 import { isCustomer, isTechnician } from '../../utils/roles';
-import { CustomBox, CustomText, LastTickets, NewTicketForm, TicketCard } from '../../components';
+import { CustomBox, CustomText, LastTickets, NewTicketForm, TicketAssignCard, TicketCard } from '../../components';
 import { priorities, TicketStatus, TicketStatusLabels } from '../../features/ticket/ticketTypes';
 import { formatDateToPtBR } from '../../utils/formatDate';
 import TicketService from '../../services/TicketService';
+import TechnicianAssignCart from '../../components/TechnicianAssignCart';
+import TechnicianService from '../../services/TechnicianService';
+import { setTechnicians } from '../../store/slices/technicianSlice';
 
 const Home: React.FC = () => {
+  const [selectedTicketIds, setSelectedTicketIds] = useState<number[]>([]);
   const { auth, customer, technician, ticket } = useAppSelector((state) => state);
   const { user } = auth;
 
@@ -33,7 +37,7 @@ const Home: React.FC = () => {
         return technicianTickets;
       }
 
-      const allTickets = await TicketService.getAllTickets(TicketStatus.OPEN);
+      const allTickets = await TicketService.getAllTickets(TicketStatus.OPEN, true);
       return allTickets;
     },
     enabled: !!user && (user.userType !== UserTypeEnum.CUSTOMER || !!customer.currentCustomer?.id),
@@ -44,6 +48,26 @@ const Home: React.FC = () => {
       dispatch(setTickets(data));
     }
   }, [data, isLoading, isError, dispatch]);
+  
+  const { data: technicians } = useQuery({
+    queryKey: ['technicians'],
+    queryFn: async () => await TechnicianService.getAllAvailableTechnicians(),
+    enabled:
+      user?.userType === UserTypeEnum.SUPPORT_OPERATOR ||
+      user?.userType === UserTypeEnum.ADMINISTRATOR,
+  });
+
+  useEffect(() => {
+    if (technicians) {
+      dispatch(setTechnicians(technicians));
+    }
+  }, [technicians, dispatch]);
+
+  const handleCheckboxChange = (ticketId: number, checked: boolean) => {
+    setSelectedTicketIds((prev) =>
+      checked ? [...prev, ticketId] : prev.filter((id) => id !== ticketId)
+    );
+  };
 
  return (
   <CustomBox
@@ -57,7 +81,7 @@ const Home: React.FC = () => {
         <NewTicketForm user={user} />
         <LastTickets />
       </CustomBox>
-    ) : (
+    ) : user && user.userType === UserTypeEnum.TECHNICIAN ? (
       <CustomBox sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <CustomText variant='h5' fontWeight='bold' gutterBottom>
           Chamados abertos
@@ -86,6 +110,30 @@ const Home: React.FC = () => {
             </CustomText>
           )}
         </CustomBox>
+      </CustomBox>
+    ) : (
+      <CustomBox sx={{ display: 'flex', gap: 2 }}>
+        <CustomBox sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '60%' }}>
+          <CustomText variant='h5' fontWeight='bold' gutterBottom>
+            Chamados abertos
+          </CustomText>
+          {
+            ticket.tickets.map((ticket) => {
+              return (
+                <TicketAssignCard
+                  key={ticket.id}
+                  description={ticket.description}
+                  title={ticket.title}
+                  status={TicketStatusLabels[ticket.statusId as TicketStatus] || 'Desconhecido'}
+                  onEdit={() => console.log(`Edit ticket ${ticket.id}`)}
+                  checked={selectedTicketIds.includes(ticket.id)}
+                  onCheckChange={(checked) => handleCheckboxChange(ticket.id, checked)}
+                />
+              );
+            })
+          }
+        </CustomBox>
+        <TechnicianAssignCart ticketIds={selectedTicketIds}/>
       </CustomBox>
     )}
   </CustomBox>

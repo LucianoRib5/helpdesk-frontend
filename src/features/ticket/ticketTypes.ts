@@ -122,3 +122,8 @@ export interface TicketReportData {
   ticketsByPriority: CountDTO[];
   ticketsOverTime: CountByDateDTO[];
 }
+
+export interface AssignMultipleTicketsPayload {
+  technicianId: number;
+  ticketIds: number[];
+}

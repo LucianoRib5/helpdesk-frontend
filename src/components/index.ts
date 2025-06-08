@@ -16,6 +16,7 @@ import NewTicketForm from './NewTicketForm';
 import ProtectedRoute from './ProtectedRoute';
 import ReportCharts from './ReportCharts';
 import ReportFilter from './ReportFilter'
+import TicketAssignCard from './TicketAssignCard';
 import TicketCard from './TicketCard';
 import TicketDetailsCard from './TicketDetailsCard';
 import TicketFilter from './TicketFilter';
@@ -41,6 +42,7 @@ export {
     ProtectedRoute,
     ReportCharts,
     ReportFilter,
+    TicketAssignCard,
     TicketCard,
     TicketDetailsCard,
     TicketFilter,

@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { formatDateToPtBR } from "../../utils/formatDate";
-import { useAppSelector } from "../../hooks/useAppSelector";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { formatDateToPtBR } from '../../utils/formatDate';
+import { useAppSelector } from '../../hooks/useAppSelector';
 import { toast } from 'react-toastify';
-import type { AddCommentPayload, ChangeTicketStatusPayload, CloseTicketPayload, Ticket } from "../../features/ticket/ticketTypes";
+import type { AddCommentPayload, ChangeTicketStatusPayload, CloseTicketPayload, Ticket } from '../../features/ticket/ticketTypes';
 import { 
   CloseTicketModal,
   CommentsCard, 
   CustomBox, 
   TicketDetailsCard, 
   UpdateHistoryCard 
-} from "../../components";
-import TicketService from "../../services/TicketService";
-import type { AxiosError } from "axios";
+} from '../../components';
+import TicketService from '../../services/TicketService';
+import type { AxiosError } from 'axios';
 
 const TicketDetails: React.FC = () => {
   const [ticket, setTicket] = useState<Ticket | null>(null);
@@ -46,7 +46,7 @@ const TicketDetails: React.FC = () => {
       invalidateTicketDetails();
       toast.success('Chamado fechado com sucesso!', {
         autoClose: 3000,
-        theme: "colored",
+        theme: 'colored',
       });
       setOpenCloseTicketModal(false);
     },
@@ -55,7 +55,7 @@ const TicketDetails: React.FC = () => {
         (error.response?.data as { message?: string })?.message,
         {
           autoClose: 3000,
-          theme: "colored",
+          theme: 'colored',
         }
       )
     }
@@ -81,7 +81,7 @@ const TicketDetails: React.FC = () => {
         (error.response?.data as { message?: string })?.message,
         {
           autoClose: 3000,
-          theme: "colored",
+          theme: 'colored',
         }
       )
     }
@@ -97,7 +97,7 @@ const TicketDetails: React.FC = () => {
     });
   }
 
-    const changeStatus = useMutation({
+  const changeStatus = useMutation({
     mutationFn: (data: ChangeTicketStatusPayload) => TicketService.changeTicketStatus(data),
     onSuccess: () => {
       invalidateTicketDetails();
@@ -107,11 +107,11 @@ const TicketDetails: React.FC = () => {
         (error.response?.data as { message?: string })?.message,
         {
           autoClose: 3000,
-          theme: "colored",
+          theme: 'colored',
         }
       )
     }
-  });
+});
 
   const handleChangeStatusSubmit = (statusId: number) => {
     if (!ticket || !user) return;
