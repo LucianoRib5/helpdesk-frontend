@@ -29,7 +29,7 @@ const MainLayout = () => {
       { text: 'Home', path: '/dashboard', visible: true },
       { text: 'Ver chamados', path: '/dashboard/tickets', visible: true },
       { text: 'Gerenciar usuários', path: '/dashboard/manage-users', visible: isAdminUser },
-      { text: 'Relatórios', path: '/dashboard/reports', visible: isAdminUser },
+      { text: 'Relatórios', path: '/tickets/reports', visible: isAdminUser },
       { text: 'Configurações da conta', path: '/dashboard/account-settings', visible: true },
     ]
 
@@ -53,10 +53,10 @@ const MainLayout = () => {
             borderBottom: '1px solid #e0e0e0', 
           }}
         >
-          <CustomText variant="h6" noWrap>
+          <CustomText variant='h6' noWrap>
             Dashboard
           </CustomText>
-          <CustomText variant="body1">Bem vindo(a), {user?.userName}!</CustomText>
+          <CustomText variant='body1'>Bem vindo(a), {user?.userName}!</CustomText>
         </CustomToolbar>
       </CustomAppBar>
 
@@ -84,7 +84,7 @@ const MainLayout = () => {
       </CustomDrawer>
 
       <CustomBox
-        component="main"
+        component='main'
         sx={{ flexGrow: 1, bgcolor: '#f7f7f7', p: 3, minHeight: '100vh' }}
       >
         <CustomToolbar />

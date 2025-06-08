@@ -3,8 +3,10 @@ import type {
   ChangeTicketStatusPayload,
   CloseTicketPayload, 
   CreateTicketPayload, 
+  ReportPayload, 
   Ticket, 
-  TicketFilters 
+  TicketFilters, 
+  TicketReportData
 } from '../features/ticket/ticketTypes'
 import { UserTypeId } from '../features/user/userTypes'
 import type { PaginatedResponse } from '../types/paginatedResponse'
@@ -76,6 +78,15 @@ const TicketService = {
       statusId,
       updatedById
     });
+  },
+  generateReport: async (payload: ReportPayload) => {
+    const { startDate, endDate, priorities, statuses} = payload;
+    return post<TicketReportData>('/tickets/report', {
+      startDate,
+      endDate,
+      priorities,
+      statuses
+    }).then(response => response.data);
   }
 }
 

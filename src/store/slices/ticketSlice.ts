@@ -1,12 +1,14 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Ticket } from '../../features/ticket/ticketTypes';
+import type { Ticket, TicketReportData } from '../../features/ticket/ticketTypes';
 
 interface TicketState {
   tickets: Ticket[];
+  reportData: TicketReportData | null;
 }
 
 const initialState: TicketState = {
   tickets: [],
+  reportData: null,
 };
 
 const ticketSlice = createSlice({
@@ -28,8 +30,18 @@ const ticketSlice = createSlice({
     deleteTicket: (state, action: PayloadAction<number>) => {
       state.tickets = state.tickets.filter(ticket => ticket.id !== action.payload);
     },
+    setReportData: (state, action: PayloadAction<TicketReportData | null>) => {
+      state.reportData = action.payload;
+    },
   },
 });
 
-export const { setTickets, addTicket, updateTicket, deleteTicket } = ticketSlice.actions;
+export const { 
+  setTickets, 
+  addTicket, 
+  updateTicket, 
+  deleteTicket, 
+  setReportData 
+} = ticketSlice.actions;
+
 export default ticketSlice.reducer;

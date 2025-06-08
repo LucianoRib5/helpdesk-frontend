@@ -98,3 +98,27 @@ export interface ChangeTicketStatusPayload {
   statusId: number;
   updatedById: number;
 }
+
+export interface ReportPayload {
+  startDate: string;
+  endDate: string;
+  priorities?: number[];
+  statuses?: number[];
+}
+
+interface CountDTO {
+  label: string;
+  count: number;
+}
+
+interface CountByDateDTO {
+  date: string;
+  count: number;
+}
+
+export interface TicketReportData {
+  totalTickets: number;
+  ticketsByStatus: CountDTO[];
+  ticketsByPriority: CountDTO[];
+  ticketsOverTime: CountByDateDTO[];
+}
