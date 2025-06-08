@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import {
   BarChart, 
   Bar, 
@@ -13,14 +14,13 @@ import {
   Cell, 
   Legend
 } from 'recharts';
-import React from 'react';
 import type { TicketReportData } from '../features/ticket/ticketTypes';
 import CustomBox from './CustomBox';
 import CustomText from './CustomText';
 import { formatDateToPtBR } from '../utils/formatDate';
 import { capitalizeFirstLetter } from '../utils/capitalizeFirstLetter';
 
-interface ReportCharts {
+interface ReportChartsProps {
   data: TicketReportData;
 };
 
@@ -33,12 +33,12 @@ const COLORS = [
   '#ccc',
 ];
 
-const ReportCharts: React.FC<ReportCharts> = ({ data }) => {
+const ReportCharts = forwardRef<HTMLDivElement, ReportChartsProps>(({ data }, ref) => {
   return (
-    <CustomBox sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <CustomBox sx={{ display: 'flex', flexDirection: 'column', gap: 3 }} ref={ref}>
       <CustomBox sx={{ borderRadius: 2, boxShadow: 1, p: 3 }}>
         <CustomText variant='h6' fontWeight='bold'>Tickets por status</CustomText>
-        <ResponsiveContainer width='100%' height={350}>
+        <ResponsiveContainer width='80%' height={350}>
           <BarChart
             layout='vertical'
             data={data.ticketsByStatus}
@@ -67,7 +67,7 @@ const ReportCharts: React.FC<ReportCharts> = ({ data }) => {
 
       <CustomBox sx={{ borderRadius: 2, boxShadow: 1, p: 3 }}>
         <CustomText variant='h6' fontWeight='bold'>Tickets ao longo do tempo</CustomText>
-        <ResponsiveContainer width='100%' height={350}>
+        <ResponsiveContainer width='80%' height={350}>
           <LineChart data={data.ticketsOverTime}>
             <CartesianGrid stroke={COLORS[5]} />
             <XAxis dataKey='date' tickFormatter={formatDateToPtBR} />
@@ -92,7 +92,7 @@ const ReportCharts: React.FC<ReportCharts> = ({ data }) => {
 
       <CustomBox sx={{ borderRadius: 2, boxShadow: 1, p: 3 }}>
         <CustomText variant='h6' fontWeight='bold'>Tickets por prioridade</CustomText>
-        <ResponsiveContainer width='100%' height={380}>
+        <ResponsiveContainer width='80%' height={380}>
           <PieChart>
             <Pie
               data={data.ticketsByPriority}
@@ -131,6 +131,6 @@ const ReportCharts: React.FC<ReportCharts> = ({ data }) => {
       </CustomBox>
     </CustomBox>
   );
-};
+});
 
 export default ReportCharts;

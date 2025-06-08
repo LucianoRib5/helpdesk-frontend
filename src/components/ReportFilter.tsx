@@ -13,13 +13,27 @@ import { toast } from 'react-toastify';
 import { setReportData } from '../store/slices/ticketSlice';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import type { AxiosError } from 'axios';
+import { exportReportPDF } from '../utils/exportPDF';
 import dayjs from 'dayjs';
 import TicketService from '../services/TicketService';
 import CustomBox from './CustomBox';
 import CustomText from './CustomText';
+import type { RefObject } from 'react';
 
-const ReportFilter: React.FC = () => {
+interface ReportFilterProps {
+  reportRef: RefObject<HTMLDivElement | null>;
+}
+
+const ReportFilter: React.FC<ReportFilterProps> = ({ reportRef }) => {
   const dispatch = useAppDispatch();
+
+    const handleExport = () => {
+    if (reportRef.current) {
+      exportReportPDF(reportRef.current);
+    } else {
+      toast.error('Erro ao exportar. Gráfico não encontrado.');
+    }
+  };
 
   const {
     control,
@@ -173,6 +187,7 @@ const ReportFilter: React.FC = () => {
             fontWeight: 600,
           }}
           disabled={!getReports.isSuccess}
+          onClick={handleExport}
         >
           EXPORTAR
         </Button>
