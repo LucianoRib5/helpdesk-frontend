@@ -1,22 +1,24 @@
 import { useNavigate } from 'react-router-dom';
 import { CustomBox, CustomPaper, CustomText } from '.';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { isCustomer } from '../utils/roles';
+import { isCustomer, isTechnician } from '../utils/roles';
 
 interface TicketCardProps {
   id: number;
   title: string;
-  responsible?: string;
   status: string;
   date: string;
+  responsible?: string;
+  priority?: string;
 }
 
 const TicketCard: React.FC<TicketCardProps> = ({
   id,
   title,
-  responsible,
   status,
   date,
+  responsible,
+  priority 
 }) => {
   const { user } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -43,24 +45,31 @@ const TicketCard: React.FC<TicketCardProps> = ({
         }
       }}
     >
-      <CustomText variant="subtitle1" fontWeight="bold" gutterBottom>
+      <CustomText variant='subtitle1' fontWeight='bold' gutterBottom>
         {`Chamado #${String(id). padStart(3, '0')}`}
       </CustomText>
       <CustomBox>
-        <CustomText variant="body2" gutterBottom>
+        <CustomText variant='body2' gutterBottom>
           <strong>Título:</strong> {title}
         </CustomText>
         {
+          isTechnician(user?.userType) && (
+            <CustomText variant='body2' gutterBottom>
+              <strong>Prioridade:</strong> {priority}
+            </CustomText>
+          )
+        }
+        {
           isCustomer(user?.userType) && (
-            <CustomText variant="body2" gutterBottom>
+            <CustomText variant='body2' gutterBottom>
               <strong>Responsável:</strong> {responsible}
             </CustomText>
           )
         }
-        <CustomText variant="body2" gutterBottom>
+        <CustomText variant='body2' gutterBottom>
           <strong>Status:</strong> {status}
         </CustomText>
-        <CustomText variant="body2">
+        <CustomText variant='body2'>
           <strong>Data:</strong> {date}
         </CustomText>
       </CustomBox>

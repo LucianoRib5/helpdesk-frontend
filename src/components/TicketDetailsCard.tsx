@@ -41,7 +41,7 @@ const TicketDetailsCard: React.FC<TicketDetailsCardProps> = ({
   const handleUpdateButton = () => (
     <Button
       onClick={onUpdate}
-      variant="contained"
+      variant='contained'
       sx={{
         backgroundColor: '#E4E4E7',
         color: '#000',
@@ -69,16 +69,16 @@ const TicketDetailsCard: React.FC<TicketDetailsCardProps> = ({
         width: '100%',
       }}
     >
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography fontWeight="bold">
+      <Box display='flex' justifyContent='space-between' alignItems='center'>
+        <Typography fontWeight='bold'>
           Detalhes do Chamado #{id}
         </Typography>
 
         {userType === UserTypeEnum.TECHNICIAN ? (
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography variant="body2">Status:</Typography>
+          <Box display='flex' alignItems='center' gap={1}>
+            <Typography variant='body2'>Status:</Typography>
             <Select
-              size="small"
+              size='small'
               value={String(status)}
               onChange={handleStatusChange}
               sx={{ fontSize: '14px', minWidth: 180 }}
@@ -97,12 +97,12 @@ const TicketDetailsCard: React.FC<TicketDetailsCardProps> = ({
             {handleUpdateButton()}
           </Box>
         ) : (
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography variant="body2">Status: {TicketStatusLabels[status as TicketStatus]}</Typography>
+          <Box display='flex' alignItems='center' gap={1}>
+            <Typography variant='body2'>Status: {TicketStatusLabels[status as TicketStatus]}</Typography>
             {handleUpdateButton()}
             <Button
               onClick={onCloseTicket}
-              variant="outlined"
+              variant='outlined'
               sx={{
                 color: '#FF0000',
                 borderColor: '#FF0000',
@@ -118,16 +118,18 @@ const TicketDetailsCard: React.FC<TicketDetailsCardProps> = ({
         )}
       </Box>
 
-      <Typography variant="body2">
+      <Typography variant='body2'>
         <strong>Título:</strong> {title}
       </Typography>
-      <Typography variant="body2">
+      <Typography variant='body2'>
         <strong>Descrição:</strong> {description}
       </Typography>
-      <Typography variant="body2">
-        <strong>Responsável:</strong> {responsible}
-      </Typography>
-      <Typography variant="body2">
+      { userType !== UserTypeEnum.TECHNICIAN && (
+        <Typography variant='body2'>
+          <strong>Responsável:</strong> {responsible}
+        </Typography>
+      )}
+      <Typography variant='body2'>
         <strong>Data de Criação:</strong> {createdAt}
       </Typography>
     </Box>
