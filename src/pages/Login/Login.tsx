@@ -20,6 +20,8 @@ import CustomerService from '../../services/CustomerService';
 import { setTechnician } from '../../store/slices/technicianSlice';
 import TechnicianService from '../../services/TechnicianService';
 import * as S from './styles';
+import type { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -64,8 +66,14 @@ const Login: React.FC = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: LoginSchema) => AuthService.login(data),
     onSuccess: (response) => onSuccess(response.data.user, response.data.token),
-    onError: (error: any) => {
-      console.error('Login error:', error);
+    onError: (error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message,
+        {
+          autoClose: 3000,
+          theme: 'colored',
+        }
+      )
     }
   });
 
