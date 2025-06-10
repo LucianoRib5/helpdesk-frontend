@@ -61,7 +61,6 @@ const TechnicianAssignCart: React.FC<TechnicianAssignCartProps> = ({ ticketIds }
   return (
     <Card 
       sx={{
-        marginLeft:40,
         maxWidth: 400, 
         borderRadius: 2, 
         boxShadow: 1,
