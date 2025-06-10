@@ -5,8 +5,9 @@ export interface CreateUserPayload {
     cpf: string;
     cnpj?: string | null;
     phoneNumber: string;
-    address: string;
-    cityId: number;
+    typeId?: UserTypeId;
+    address?: string;
+    cityId?: number;
 }
 
 export const UserTypeEnum = {
@@ -41,4 +42,27 @@ export interface UserBasicInfo {
     userName: string;
     userType: UserTypeEnum;
     userPermission: UserPermission;
+}
+
+interface UserType {
+    id: UserTypeId;
+    description: UserTypeEnum;
+}
+
+interface UserStatus {
+    id: number;
+    description: string;
+}
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    cpf: string;
+    cnpj?: string | null;
+    phoneNumber?: string | null;
+    password: string;
+    type: UserType;
+    status: UserStatus;
+    createdAt: string;
+    updatedAt: string;
 }

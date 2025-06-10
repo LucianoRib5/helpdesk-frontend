@@ -19,6 +19,7 @@ import { formatCnpj } from '../../utils/formatCnpj';
 import { formatCpf } from '../../utils/formatCpf';
 import UserService  from '../../services/UserService';
 import CityService from '../../services/CityService';
+import type { AxiosError } from 'axios';
 
 const UserRegister: React.FC = () => {
   const [isCompany, setIsCompany] = useState(false);
@@ -40,8 +41,14 @@ const UserRegister: React.FC = () => {
     onSuccess: () => {
       navigate('/login')
     },
-    onError: (error: any) => {
-      console.error('Erro ao criar usuário:', error);
+    onError: (error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message,
+        {
+          autoClose: 3000,
+          theme: 'colored',
+        }
+      )
     },
   });
 
@@ -51,16 +58,17 @@ const UserRegister: React.FC = () => {
     queryKey: ['city', watchCep],
     queryFn: async () => {
       try {
-        const response = await CityService.getCityByCep(watchCep);
+        const response = await CityService.getCityByCep(watchCep ?? '');
         return response.data;
       } catch (error: any) {
-        console.error(error.response?.data?.message);
-        toast.error(error.response?.data?.message, {
-          autoClose: 3000,
-          theme: "colored",
-        });
+        toast.error(
+          (error.response?.data as { message?: string })?.message,
+          {
+            autoClose: 3000,
+            theme: 'colored',
+          }
+        )
         setValue('cep', '');
-        throw error;
       }
     },
     enabled: !!watchCep && watchCep.length === 9,
@@ -80,7 +88,7 @@ const UserRegister: React.FC = () => {
       phoneNumber: data.phoneNumber,
       cnpj: isCompany ? data.cnpj ?? null : undefined,
       address: data.address,
-      cityId: city.id, 
+      cityId: city.id,
     };
 
     mutate(payload);

@@ -28,7 +28,7 @@ const MainLayout = () => {
     const menuOptions = [
       { text: 'Home', path: '/dashboard', visible: true },
       { text: 'Ver chamados', path: '/dashboard/tickets', visible: true },
-      { text: 'Gerenciar usuários', path: '/dashboard/manage-users', visible: isAdminUser },
+      { text: 'Gerenciar usuários', path: '/manage-users', visible: isAdminUser },
       { text: 'Relatórios', path: '/tickets/reports', visible: isAdminUser },
       { text: 'Configurações da conta', path: '/dashboard/account-settings', visible: true },
     ]

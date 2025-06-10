@@ -29,7 +29,7 @@ const TicketList: React.FC = () => {
         return;
       }
 
-    const allTickets = await TicketService.getAllTickets(undefined, filters);
+    const allTickets = await TicketService.getAllTickets(undefined, undefined, filters);
     dispatch(setTickets(allTickets));
   }
   
