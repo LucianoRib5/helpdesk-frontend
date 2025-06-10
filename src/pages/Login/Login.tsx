@@ -19,6 +19,7 @@ import AuthService from '../../services/AuthService';
 import CustomerService from '../../services/CustomerService';
 import { setTechnician } from '../../store/slices/technicianSlice';
 import TechnicianService from '../../services/TechnicianService';
+import * as S from './styles';
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -74,8 +75,8 @@ const Login: React.FC = () => {
 
   return (
     <CustomPaper>
-      <CustomText>Bem-vindo de volta</CustomText>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <CustomText variant='h6' fontWeight='bold'>Bem-vindo de volta</CustomText>
+      <S.CustomForm onSubmit={handleSubmit(onSubmit)}>
         <CustomInput
           label="Email"
           placeholder="Insira seu e-mail"
@@ -89,10 +90,14 @@ const Login: React.FC = () => {
           register={register('password')}
           fieldError={errors.password}
         />
-        <CustomButton type="submit" disabled={isPending}>
+        <CustomButton 
+          type="submit" 
+          disabled={isPending}
+          sx={{ width: '100%' }}
+        >
           Entrar
         </CustomButton>
-      </form>
+      </S.CustomForm>
       <p>
         Não tem uma conta?{' '}
         <a href="/register">
