@@ -6,6 +6,7 @@ import { isCustomer, isTechnician } from '../../utils/roles';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { setTickets } from '../../store/slices/ticketSlice';
 import TicketService from '../../services/TicketService';
+import { useEffect } from 'react';
 
 const TicketList: React.FC = () => {
   const { 
@@ -16,6 +17,10 @@ const TicketList: React.FC = () => {
   } = useAppSelector((state) => state);
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setTickets([]));
+  }, []);
 
   const getTickets = async (filters: TicketFilterForm) => {
     if (!user) return [];
