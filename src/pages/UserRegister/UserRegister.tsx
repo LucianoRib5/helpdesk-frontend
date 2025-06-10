@@ -5,8 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { userSchema, type UserSchema } from '../../schemas/user.schema';
 import type { CreateUserPayload } from '../../features/user/userTypes';
-import { 
-  CheckboxField, 
+import {
   CustomButton, 
   CustomInput, 
   CustomPaper, 
@@ -20,9 +19,9 @@ import { formatCpf } from '../../utils/formatCpf';
 import UserService  from '../../services/UserService';
 import CityService from '../../services/CityService';
 import type { AxiosError } from 'axios';
+import * as S from './styles';
 
 const UserRegister: React.FC = () => {
-  const [isCompany, setIsCompany] = useState(false);
   const [city, setCity] = useState<City | null>(null);
   const navigate = useNavigate();
 
@@ -86,7 +85,7 @@ const UserRegister: React.FC = () => {
       password: data.password,
       cpf: data.cpf,
       phoneNumber: data.phoneNumber,
-      cnpj: isCompany ? data.cnpj ?? null : undefined,
+      cnpj: data.cnpj || undefined,
       address: data.address,
       cityId: city.id,
     };
@@ -96,8 +95,8 @@ const UserRegister: React.FC = () => {
 
   return (
     <CustomPaper>
-      <CustomText>Criar Conta</CustomText>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <CustomText variant='h6' fontWeight='bold'>Criar Conta</CustomText>
+      <S.CustomForm onSubmit={handleSubmit(onSubmit)} noValidate>
         <CustomInput
           label="Nome"
           register={register('name')}
@@ -108,11 +107,6 @@ const UserRegister: React.FC = () => {
           register={register('email')}
           fieldError={errors.email}          
         />
-        <CheckboxField
-          label="Pessoa Jurídica"
-          checked={isCompany}
-          onChange={setIsCompany}
-        />
         <CustomInput
           label="CPF"
           {...register('cpf', {
@@ -122,17 +116,16 @@ const UserRegister: React.FC = () => {
           })}
           fieldError={errors.cpf}
         />
-        {isCompany && (
-          <CustomInput
-            label="CNPJ"
-            {...register('cnpj', {
-              onChange: (e) => {
-                e.target.value = formatCnpj(e.target.value);
-              },
-            })}
-            fieldError={errors.cnpj}
-          />
-        )}
+        <CustomInput
+          sx={{ width: '100%' }}
+          label="CNPJ"
+          {...register('cnpj', {
+            onChange: (e) => {
+              e.target.value = formatCnpj(e.target.value);
+            },
+          })}
+          fieldError={errors.cnpj}
+        />
         <CustomInput
           label="Telefone"
           register={register('phoneNumber')}
@@ -166,10 +159,12 @@ const UserRegister: React.FC = () => {
           register={register('confirmPassword')}
           fieldError={errors.confirmPassword}
         />
-        <CustomButton>
+        <CustomButton
+          sx={{ width: '100%' }}
+        >
           Cadastrar
         </CustomButton>
-      </form>
+      </S.CustomForm>
         <p>
           Já tem uma conta?{' '}
           <a href="/login">
