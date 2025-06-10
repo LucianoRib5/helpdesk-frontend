@@ -1,17 +1,18 @@
 import { Card, CardContent, Typography, Button, Box } from "@mui/material";
+import { UserStatusEnum, type UserBasicInfo } from "../features/user/userTypes";
 
 interface UserCardProps {
-  name: string;
+  user: UserBasicInfo;
   role: string;
   onEdit: () => void;
-  onDeactivate: () => void;
+  changeStatus: () => void;
 }
 
 const UserCard: React.FC<UserCardProps> = ({ 
-  name, 
+  user, 
   role, 
   onEdit, 
-  onDeactivate
+  changeStatus
 }) => {
   return (
     <Card
@@ -26,7 +27,7 @@ const UserCard: React.FC<UserCardProps> = ({
     >
       <CardContent sx={{ p: 0 }}>
         <Typography variant="subtitle1" fontWeight={600}>
-          {name}
+          {user.userName}
         </Typography>
         <Typography variant="body2" color="text.secondary" mb={2}>
           {role}
@@ -52,9 +53,9 @@ const UserCard: React.FC<UserCardProps> = ({
               borderRadius: 2,
               fontWeight: 500,
             }}
-            onClick={onDeactivate}
+            onClick={changeStatus}
           >
-            Desativar
+            {user.status === UserStatusEnum.ACTIVE ? 'Desativar' : 'Ativar'}
           </Button>
         </Box>
       </CardContent>

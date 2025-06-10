@@ -12,7 +12,7 @@ export const userSchemaAdmin = z.object({
   }),
   cep: z.string().optional(),
   address: z.string().optional(),
-  password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+  password: z.string(),
   confirmPassword: z.string(),
 })
 .refine((data) => data.password === data.confirmPassword, {

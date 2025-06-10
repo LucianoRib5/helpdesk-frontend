@@ -1,10 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { User, UserBasicInfo } from '../../features/user/userTypes';
+import type { UserBasicInfo } from '../../features/user/userTypes';
 import { clearToken } from '../../utils/token';
 
 interface AuthState {
   user: UserBasicInfo | null;
-  users: User[];
+  users: UserBasicInfo[];
 }
 
 const initialState: AuthState = {
@@ -23,11 +23,21 @@ const authSlice = createSlice({
       state.user = null;
       clearToken();
     },
-    setUsers: (state, action: PayloadAction<User[]>) => {
+    setUsers: (state, action: PayloadAction<UserBasicInfo[]>) => {
       state.users = action.payload;
     },
+    updateUser: (state, action: PayloadAction<UserBasicInfo>) => {
+      const updatedUser = action.payload;
+      const index = state.users.findIndex(user => user.userId === updatedUser.userId);
+      if (index !== -1) {
+        state.users[index] = updatedUser;
+      }
+      if (state.user?.userId === updatedUser.userId) {
+        state.user = updatedUser;
+      }
+    }
   },
 });
 
-export const { setUser, logout, setUsers } = authSlice.actions;
+export const { setUser, logout, setUsers, updateUser } = authSlice.actions;
 export default authSlice.reducer;

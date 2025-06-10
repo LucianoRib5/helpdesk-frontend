@@ -19,6 +19,14 @@ export const UserTypeEnum = {
 
 export type UserTypeEnum = (typeof UserTypeEnum)[keyof typeof UserTypeEnum];
 
+export const UserStatusEnum = {
+    ACTIVE: 'ACTIVE',
+    INACTIVE: 'INACTIVE',
+    SUSPENDED: 'SUSPENDED',
+} as const;
+
+export type UserStatusEnum = (typeof UserStatusEnum)[keyof typeof UserStatusEnum];
+
 export const UserTypeId = {
     CUSTOMER: 1,
     SUPPORT_OPERATOR: 2,
@@ -40,29 +48,14 @@ export interface UserPermission {
 export interface UserBasicInfo {
     userId: number;
     userName: string;
-    userType: UserTypeEnum;
-    userPermission: UserPermission;
-}
-
-interface UserType {
-    id: UserTypeId;
-    description: UserTypeEnum;
-}
-
-interface UserStatus {
-    id: number;
-    description: string;
-}
-export interface User {
-    id: number;
-    name: string;
     email: string;
     cpf: string;
     cnpj?: string | null;
     phoneNumber?: string | null;
-    password: string;
-    type: UserType;
-    status: UserStatus;
-    createdAt: string;
-    updatedAt: string;
+    userType: UserTypeEnum;
+    userTypeId: UserTypeId;
+    status: UserStatusEnum;
+    userPermission: UserPermission;
+    cep: string | null;
+    address: string | null;
 }

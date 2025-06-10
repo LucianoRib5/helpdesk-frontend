@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { UserTypeId, type CreateUserPayload } from "../features/user/userTypes";
+import { UserTypeId, type CreateUserPayload, type UserBasicInfo } from "../features/user/userTypes";
 import { formatCpf } from "../utils/formatCpf";
 import { formatCnpj } from "../utils/formatCnpj";
 import { userSchemaAdmin, type UserSchemaAdmin } from "../schemas/register.schema";
@@ -25,18 +25,25 @@ import CustomInput from "./CustomInput";
 import CityService from "../services/CityService";
 import UserService from "../services/UserService";
 import type { AxiosError } from "axios";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { updateUser } from '../store/slices/authSlice';
 
 interface CreateUserModalProps {
   open: boolean;
+  userToEdit: UserBasicInfo | null;
   onClose: () => void;
+  setUserToEdit: React.Dispatch<React.SetStateAction<UserBasicInfo | null>>
 }
 
 export default function CreateUserModal({
   open,
+  userToEdit,
   onClose,
+  setUserToEdit
 }: CreateUserModalProps) {
 	const [isCompany, setIsCompany] = useState(false);
   const [city, setCity] = useState<City | null>(null);
+  const dispatch = useAppDispatch();
 	
   const {
     control,
@@ -44,10 +51,26 @@ export default function CreateUserModal({
     watch,
 	  register,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<UserSchemaAdmin>({
     resolver: zodResolver(userSchemaAdmin),
   });
+
+  useEffect(() => {
+    if(userToEdit) {
+      console.log('userToEdit.userTypeId', userToEdit.userTypeId);
+      setIsCompany(userToEdit.cnpj !== null);
+      setValue('name', userToEdit.userName);
+      setValue('email', userToEdit.email);
+      setValue('phoneNumber', userToEdit.phoneNumber ?? '');
+      setValue('cpf', userToEdit.cpf ?? '');
+      setValue('cnpj', userToEdit.cnpj ?? '');
+      setValue('type', userToEdit.userTypeId);
+      setValue('cep', userToEdit.cep ?? '');
+      setValue('address', userToEdit.address ?? '');
+    }
+  }, [userToEdit]);
 
   const selectedType = watch("type");
   const watchCep = watch('cep');
@@ -76,26 +99,33 @@ export default function CreateUserModal({
     if (data && !isLoading) setCity(data);
   }, [data]);
 
-  const resetForm = () => {
+  const closeModal = () => {
+    onClose();
+    reset();
     setIsCompany(false);
     setCity(null);
-    setValue('name', '');
-    setValue('email', '');
-    setValue('cpf', '');
-    setValue('cnpj', '');
-    setValue('phoneNumber', '');
-    setValue('cep', '');
-    setValue('address', '');
-    setValue('password', '');
-    setValue('confirmPassword', '');
-    setValue('type', UserTypeId.CUSTOMER);
+    setUserToEdit(null);
   }
 
   const { mutate } = useMutation({
     mutationFn: (payload: CreateUserPayload) => UserService.createUser(payload),
-    onSuccess: () => { 
-      onClose() 
-      resetForm();
+    onSuccess: () => closeModal(),
+    onError: (error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message,
+        {
+          autoClose: 3000,
+          theme: 'colored',
+        }
+      )
+    },
+  });
+
+  const onSubmitupdateUser = useMutation({
+    mutationFn: (payload: CreateUserPayload) => UserService.updateUser(userToEdit?.userId!, payload),
+    onSuccess: (response) => { 
+      closeModal()
+      dispatch(updateUser(response.data));
     },
     onError: (error: AxiosError) => {
       toast.error(
@@ -126,12 +156,18 @@ export default function CreateUserModal({
       payload.cityId = city?.id;
     }
 
+    if (userToEdit) {
+      return onSubmitupdateUser.mutate(payload);
+    }
+
     mutate(payload);
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Criar Usuário</DialogTitle>
+    <Dialog open={open} onClose={closeModal} fullWidth maxWidth="md">
+      <DialogTitle>
+        {userToEdit ? 'Editar Usuário' : 'Criar Usuário'}
+      </DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
 					<CustomBox sx={{ display: 'flex', gap: 2 }}>
@@ -177,20 +213,33 @@ export default function CreateUserModal({
 							fieldError={errors.cnpj}
 						/>
 					</CustomBox>
-					<CustomBox sx={{ display: 'flex', gap: 2 }}>
-						<CustomInput
-							label="Senha"
-							type="password"
-							register={register('password')}
-							fieldError={errors.password}
-						/>
-						<CustomInput
-							label="Confirmar Senha"
-							type="password"
-							register={register('confirmPassword')}
-							fieldError={errors.confirmPassword}
-						/>
-					</CustomBox>
+          { !userToEdit && (
+            <CustomBox sx={{ display: 'flex', gap: 2 }}>
+              <CustomInput
+                label="Senha"
+                type="password"
+                register={register('password', {
+                  required: !userToEdit ? 'Senha é obrigatória' : false,
+                  minLength: !userToEdit
+                    ? { value: 6, message: 'A senha deve ter no mínimo 6 caracteres' }
+                    : undefined,
+                })}
+                fieldError={errors.password}
+              />
+              <CustomInput
+                label="Confirmar Senha"
+                type="password"
+                {...register('confirmPassword', {
+                  required: userToEdit ? false : 'Confirmação de senha é obrigatória',
+                  minLength: {
+                    value: 6,
+                    message: 'A senha deve ter no mínimo 6 caracteres',
+                  },
+                })}
+                fieldError={errors.confirmPassword}
+              />
+            </CustomBox>
+          )}
 					<CustomBox>
 						<Typography variant="subtitle1" fontWeight={500} mb={1}>
 							Tipo
@@ -260,7 +309,7 @@ export default function CreateUserModal({
 							type="submit"
 							sx={{ borderRadius: "12px", px: 4 }}
 						>
-							CADASTRAR
+							{userToEdit ? 'Salvar' : 'Criar Usuário'}
 						</Button>
 					</CustomBox>
         </form>

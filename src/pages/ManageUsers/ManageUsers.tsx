@@ -5,11 +5,12 @@ import UserService from "../../services/UserService";
 import type { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { setUsers } from "../../store/slices/authSlice";
+import { setUsers, updateUser } from "../../store/slices/authSlice";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import UserCard from "../../components/UserCard";
 import { Button } from "@mui/material";
 import CreateUserModal from "../../components/CreateUserModal";
+import { UserStatusEnum, type UserBasicInfo } from "../../features/user/userTypes";
 
 interface UserFilterForm {
   name: string;
@@ -17,6 +18,7 @@ interface UserFilterForm {
 
 const ManageUsers: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<UserBasicInfo | null>(null);
   const { users } = useAppSelector((state) => state.auth);
   const { control, handleSubmit, watch } = useForm<UserFilterForm>();
   const dispatch = useAppDispatch();
@@ -48,6 +50,23 @@ const ManageUsers: React.FC = () => {
 
     return () => clearTimeout(subscription);
   }, [name]);
+
+  const changeStatus = useCallback((userId: number, status: string) => {
+    UserService.updateUserStatus(userId, status).then((response) => {
+      toast.success('Status do usuário atualizado com sucesso!', {
+        autoClose: 2000,
+      });
+      dispatch(updateUser(response.data));
+    }).catch((error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message,
+        {
+          autoClose: 3000,
+          theme: 'colored',
+        }
+      );
+    });
+  },[dispatch]);
   
   return (
     <CustomBox>
@@ -94,10 +113,13 @@ const ManageUsers: React.FC = () => {
         {users.length > 0 && (
           users.map((user) => (
             <UserCard
-              name={user.name}
+              user={user}
               role='teste'
-              onDeactivate={() => console.log('Deactivate', user.id)}
-              onEdit={() => console.log('Edit', user.id)}
+              changeStatus={() => changeStatus(user.userId, user.status === UserStatusEnum.ACTIVE ? UserStatusEnum.INACTIVE : UserStatusEnum.ACTIVE)}
+              onEdit={() => { 
+                setUserToEdit(user) 
+                setShowModal(true)
+              }}
             />
           ))
         )}
@@ -105,6 +127,8 @@ const ManageUsers: React.FC = () => {
       <CreateUserModal
         open={showModal}
         onClose={() => setShowModal(false)}
+        userToEdit={userToEdit}
+        setUserToEdit={setUserToEdit}
       />
     </CustomBox>
   )

@@ -1,15 +1,21 @@
-import type { CreateUserPayload, User } from '../features/user/userTypes'
+import type { CreateUserPayload, UserBasicInfo } from '../features/user/userTypes'
 import ApiService from './ApiService'
 
-const { post, get } = ApiService
+const { post, put, get } = ApiService
 
 const UserService = {
     createUser: async (payload: CreateUserPayload) => {
         return post<never>('/users', payload)
     },
     getUserByUserName: async (userName: string) => {
-        return get<User[]>(`/users/search?name=${userName}`)
-    }
+        return get<UserBasicInfo[]>(`/users/search?name=${userName}`)
+    },
+    updateUser: async (userId: number, payload: CreateUserPayload) => {
+        return put<UserBasicInfo>(`/users/${userId}`, payload)
+    },
+    updateUserStatus: async (userId: number, status: string) => {
+        return put<UserBasicInfo>(`/users/${userId}/status`, { status })
+    },
 }
 
 export default UserService
