@@ -59,3 +59,11 @@ export interface UserBasicInfo {
     cep: string | null;
     address: string | null;
 }
+
+export interface UpdateBasicDataPayload {
+    userId: number;
+    name: string;
+    phoneNumber?: string | null;
+    address?: string | null;
+    cityId?: number | null;
+}

@@ -30,7 +30,7 @@ const MainLayout = () => {
       { text: 'Ver chamados', path: '/dashboard/tickets', visible: true },
       { text: 'Gerenciar usuários', path: '/manage-users', visible: isAdminUser },
       { text: 'Relatórios', path: '/tickets/reports', visible: isAdminUser },
-      { text: 'Configurações da conta', path: '/dashboard/account-settings', visible: true },
+      { text: 'Configurações da conta', path: '/account-settings', visible: true },
     ]
 
     return menuOptions.filter(option => option.visible).map((option) => (
