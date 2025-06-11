@@ -67,3 +67,15 @@ export interface UpdateBasicDataPayload {
     address?: string | null;
     cityId?: number | null;
 }
+
+export interface UpdateEmailPayload {
+    userId: number;
+    newEmail: string;
+    password: string;
+}
+
+export interface UpdatePasswordPayload {
+    userId: number;
+    currentPassword: string;
+    newPassword: string;
+}

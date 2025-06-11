@@ -14,6 +14,8 @@ import type { AxiosError } from 'axios';
 import UserService from '../../services/UserService';
 import CityService from '../../services/CityService';
 import * as S from './styles';
+import ChangePasswordFormModal from '../../components/ChangePasswordFormModal';
+import ChangeEmailFormModal from '../../components/ChangeEmailFormModal';
 
 type FormData = {
   name?: string;
@@ -24,6 +26,8 @@ type FormData = {
 
 const AccountSettings: React.FC = () => {
   const [city, setCity] = useState<City | null>(null);
+  const [openChangeEmailModal, setOpenChangeEmailModal] = useState(false);
+  const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch()
 
@@ -113,7 +117,7 @@ const AccountSettings: React.FC = () => {
         </CustomText>
         <S.ContainerButtons>
           <Button
-            type='submit'
+            type='button'
             variant='outlined'
             sx={{
               height: 40,
@@ -121,12 +125,12 @@ const AccountSettings: React.FC = () => {
               color: 'black',
               fontWeight: 600,
             }}
-            onClick={() => alert('Abrir chamado')}
+            onClick={() => setOpenChangeEmailModal(true)}
           >
             ALTERAR E-MAIL
           </Button>
           <Button
-            type='submit'
+            type='button'
             variant='outlined'
             sx={{
               height: 40,
@@ -134,7 +138,7 @@ const AccountSettings: React.FC = () => {
               color: 'black',
               fontWeight: 600,
             }}
-            onClick={() => alert('Abrir chamado')}
+            onClick={() => setOpenChangePasswordModal(true)}
           >
             ALTERAR SENHA
           </Button>
@@ -179,6 +183,14 @@ const AccountSettings: React.FC = () => {
       >
         Salvar Alterações
       </Button>
+      <ChangeEmailFormModal 
+        open={openChangeEmailModal}
+        onClose={() => setOpenChangeEmailModal(false)}
+      />
+      <ChangePasswordFormModal 
+        open={openChangePasswordModal}
+        onClose={() => setOpenChangePasswordModal(false)}
+      />
     </CustomPaper>
   );
 }

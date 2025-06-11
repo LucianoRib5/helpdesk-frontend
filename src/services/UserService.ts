@@ -1,4 +1,4 @@
-import type { CreateUserPayload, UpdateBasicDataPayload, UserBasicInfo } from '../features/user/userTypes'
+import type { CreateUserPayload, UpdateBasicDataPayload, UpdateEmailPayload, UpdatePasswordPayload, UserBasicInfo } from '../features/user/userTypes'
 import ApiService from './ApiService'
 
 const { post, put, get } = ApiService
@@ -18,7 +18,19 @@ const UserService = {
     },
     updateBasicData: async (payload: UpdateBasicDataPayload) => {
         return put<UserBasicInfo>(`/users/basic-data`, payload)
-    }
+    },
+    updateEmail: async (payload: UpdateEmailPayload) => {
+        return put<UserBasicInfo>(`/users/${payload.userId}/email`, {
+            newEmail: payload.newEmail,
+            password: payload.password,
+        })
+    },
+    updatePassword: async (payload: UpdatePasswordPayload) => {
+        return put<UserBasicInfo>(`/users/${payload.userId}/password`, {
+            currentPassword: payload.currentPassword,
+            newPassword: payload.newPassword
+        })
+    },
 }
 
 export default UserService
